@@ -1,0 +1,9 @@
+﻿  uic QtGui.ui
+  uic StaffEdit.ui
+  moc QtGui.h
+  QtGui.cpp
+  main.cpp
+  staffedit.cpp
+  moc_QtGui.cpp
+  moc_staffedit.cpp
+  QtGui.vcxproj -> C:\Users\79692\Desktop\QtGui\x64\Debug\QtGui.exe

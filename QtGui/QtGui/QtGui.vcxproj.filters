@@ -1,0 +1,107 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{D9D6E242-F8AF-46E4-B9FD-80ECBC20BA3E}</UniqueIdentifier>
+      <Extensions>qrc;*</Extensions>
+      <ParseFiles>false</ParseFiles>
+    </Filter>
+    <Filter Include="Form Files">
+      <UniqueIdentifier>{99349809-55BA-4b9d-BF79-8FDBB0286EB3}</UniqueIdentifier>
+      <Extensions>ui</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{D9D6E242-F8AF-46E4-B9FD-80ECBC20BA3E}</UniqueIdentifier>
+      <Extensions>qrc;*</Extensions>
+      <ParseFiles>false</ParseFiles>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="QtGui.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="staffedit.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AudiencerReference.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GroupSelection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PPSReference.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UPReference.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="KOReference.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="QtGui.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="staffedit.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="AudiencerReference.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="GroupSelection.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="PPSReference.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="UPReference.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="KOReference.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+  </ItemGroup>
+  <ItemGroup>
+    <QtUic Include="QtGui.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="AudiencerReference.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="GroupSelection.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="StaffEdit.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="PPSReference.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="UPReference.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="KOReference.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="GNReference.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+  </ItemGroup>
+  <ItemGroup>
+    <QtRcc Include="QtGui.qrc">
+      <Filter>Resource Files</Filter>
+    </QtRcc>
+  </ItemGroup>
+</Project>
