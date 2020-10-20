@@ -1,0 +1,83 @@
+import openpyxl
+from openpyxl import Workbook
+from openpyxl import load_workbook
+
+
+#Начинаем создавать файл
+wb = Workbook()
+ws = wb.active
+
+ws['A1'] = '№'
+ws['B1'] = 'ФИО'
+ws['C1'] = 'Предмет'
+ws['D1'] = 'Уч.степень'
+ws['E1'] = 'Кабинет'
+ws.append([1, 'Пётр Перов', 'информатика', 'Доцент', 'А262'])
+ws.append([2, 'Владимир Владимирович', 'бокс', 'Старший преподаватель', 'Б104'])
+ws.append([3, 'ФИО', 'физика', 'Доцент', 'В303'])
+ws.append([4, 'Человек человеков', 'математика', 'Профессор', 'Г415'])
+ws.append([5, 'Кто живой', 'жизнь', 'Доцент', 'Д101'])
+
+#Сохраняем файл
+wb.save("sample.xlsx")
+wb.close()
+
+wb = load_workbook('sample.xlsx')
+sheet = wb.get_sheet_by_name('Sheet')
+#a = int(input('Сколько строк? '))
+a=6
+b = 'E' + str(a)
+#Вывести на экран
+for cellObj in sheet['A1': b]:
+      for cell in cellObj:
+          print(cell.coordinate, cell.value)
+      print('--- END ---')
+
+#Сбор данных по отдельным массивам
+a1=[]
+ba = 'A' + str(a)
+for cellObj in sheet['A2': ba]:
+      for cell in cellObj:
+          a1.append(cell.value)
+a2=[]
+ba = 'B' + str(a)
+for cellObj in sheet['B2': ba]:
+      for cell in cellObj:
+          a2.append(cell.value)
+a3=[]
+ba = 'C' + str(a)
+for cellObj in sheet['C2': ba]:
+      for cell in cellObj:
+          a3.append(cell.value)
+a4=[]
+ba = 'D' + str(a)
+for cellObj in sheet['D2': ba]:
+      for cell in cellObj:
+          a4.append(cell.value)
+a5=[]
+ba = 'E' + str(a)
+for cellObj in sheet['E2': ba]:
+      for cell in cellObj:
+          a5.append(cell.value)
+#Вывод определённого столбца на экран
+print('Введите название столбца для его вывода:')
+print('№, ФИО, Предмет, Уч.степень, Кабинет')
+vibor = 1
+while vibor != 0:
+    vibor = str(input('Что хотим? '))
+    if vibor == '№':
+            print(a1)
+    if vibor == 'ФИО':
+            print(a2)
+    if vibor == 'Предмет':
+            print(a3)
+    if vibor == 'Уч.степень':
+            print(a4)
+    if vibor == 'Кабинет':
+            print(a5)
+# Хочу добавить ошибку
+    print('Для продолжения нажмите 1')
+    b=int(input())
+    if b!=1:
+        vibor = 0
+
