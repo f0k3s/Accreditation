@@ -2,7 +2,6 @@ import openpyxl
 from openpyxl import Workbook
 from openpyxl import load_workbook
 
-
 #Начинаем создавать файл
 wb = Workbook()
 ws = wb.active
@@ -28,12 +27,15 @@ sheet = wb.get_sheet_by_name('Sheet')
 a=6
 b = 'E' + str(a)
 #Вывести на экран
-for cellObj in sheet['A1': b]:
-      for cell in cellObj:
-          print(cell.coordinate, cell.value)
-      print('--- END ---')
+x=int(input('Вывести значения на экран?(Введите 1):'))
+if x == 1:
+    for cellObj in sheet['A1': b]:
+        for cell in cellObj:
+            print(cell.value)
+        print('--- Конец строки ---')
 
 #Сбор данных по отдельным массивам
+# можно попытаться сделать через функцию двумерным массивом
 a1=[]
 ba = 'A' + str(a)
 for cellObj in sheet['A2': ba]:
@@ -60,24 +62,33 @@ for cellObj in sheet['E2': ba]:
       for cell in cellObj:
           a5.append(cell.value)
 #Вывод определённого столбца на экран
-print('Введите название столбца для его вывода:')
-print('№, ФИО, Предмет, Уч.степень, Кабинет')
-vibor = 1
-while vibor != 0:
-    vibor = str(input('Что хотим? '))
-    if vibor == '№':
-            print(a1)
-    if vibor == 'ФИО':
-            print(a2)
-    if vibor == 'Предмет':
-            print(a3)
-    if vibor == 'Уч.степень':
-            print(a4)
-    if vibor == 'Кабинет':
-            print(a5)
-# Хочу добавить ошибку
-    print('Для продолжения нажмите 1')
+z=1
+while z != 0:
+    print('Выберите какой столбик вывести на экран: ')
+    print('1 – №')
+    print('2 – ФИО')
+    print('3 – Предмет')
+    print('4 – Уч.степень')
+    print('5 – Кабинет')
+    x = int(input('Ваш выбор – '))
+    if  1<=x<=5:
+               if x==1:
+                    print(a1)
+
+               if x==2:
+                    print(a2)
+
+               if x==3:
+                    print(a3)
+
+               if x==4:
+                    print(a4)
+
+               if x==5:
+                    print(a5)
+    else:
+       print('Выбран не верный вариант!')
+    print('Для продолжения нажмите 1, иначе будет выход из программы')
     b=int(input())
     if b!=1:
-        vibor = 0
-
+        z-=1
