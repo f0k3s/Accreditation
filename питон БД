@@ -34,6 +34,7 @@ ws.append([5, 'Кто живой', 'жизнь', 'Доцент', 'Д101'])
 wb.save("sample.xlsx")
 wb.close()
 '''
+#Загружаем файл
 wb = load_workbook('sample.xlsx')
 sheet = wb.get_sheet_by_name('Sheet')
 a = int(input('Сколько строк? '))
@@ -48,7 +49,6 @@ if x == 1:
         print('--- Конец строки ---')
 
 #Сбор данных по отдельным массивам
-# можно попытаться сделать через функцию двумерным массивом
 a1=[]
 ba = 'A' + str(a)
 sbor(a1, 'A2', ba)
