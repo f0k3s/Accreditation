@@ -1,7 +1,20 @@
 import openpyxl
 from openpyxl import Workbook
 from openpyxl import load_workbook
+#Функция поиска и вывода строки из экселя
+def search (x1):
+    if (x1 < a) and (x1 > 0):
+        x1 = x1 - 1
+        z = a1[x1], a2[x1], a3[x1],a4[x1], a5[x1]
+        return z
+    else:
+        return print('Такого нет!')
 
+def sbor (x, y, z):
+    for cellObj in sheet[ y : z]:
+      for cell in cellObj:
+          x.append(cell.value)
+'''
 #Начинаем создавать файл
 wb = Workbook()
 ws = wb.active
@@ -20,11 +33,11 @@ ws.append([5, 'Кто живой', 'жизнь', 'Доцент', 'Д101'])
 #Сохраняем файл
 wb.save("sample.xlsx")
 wb.close()
-
+'''
 wb = load_workbook('sample.xlsx')
 sheet = wb.get_sheet_by_name('Sheet')
-#a = int(input('Сколько строк? '))
-a=6
+a = int(input('Сколько строк? '))
+a = a + 1
 b = 'E' + str(a)
 #Вывести на экран
 x=int(input('Вывести значения на экран?(Введите 1):'))
@@ -38,29 +51,19 @@ if x == 1:
 # можно попытаться сделать через функцию двумерным массивом
 a1=[]
 ba = 'A' + str(a)
-for cellObj in sheet['A2': ba]:
-      for cell in cellObj:
-          a1.append(cell.value)
+sbor(a1, 'A2', ba)
 a2=[]
 ba = 'B' + str(a)
-for cellObj in sheet['B2': ba]:
-      for cell in cellObj:
-          a2.append(cell.value)
+sbor(a2, 'B2', ba)
 a3=[]
 ba = 'C' + str(a)
-for cellObj in sheet['C2': ba]:
-      for cell in cellObj:
-          a3.append(cell.value)
+sbor(a3, 'C2', ba)
 a4=[]
 ba = 'D' + str(a)
-for cellObj in sheet['D2': ba]:
-      for cell in cellObj:
-          a4.append(cell.value)
+sbor(a4, 'D2', ba)
 a5=[]
 ba = 'E' + str(a)
-for cellObj in sheet['E2': ba]:
-      for cell in cellObj:
-          a5.append(cell.value)
+sbor(a5, 'E2', ba)
 #Вывод определённого столбца на экран
 z=1
 while z != 0:
@@ -74,18 +77,24 @@ while z != 0:
     if  1<=x<=5:
                if x==1:
                     print(a1)
-
+                    x1 = int(input('Вывести конкретного?(цифра) '))
+                    print (search(x1))
                if x==2:
                     print(a2)
-
+                    x1 = int(input('Вывести конкретного?(цифра) '))
+                    print (search(x1))
                if x==3:
                     print(a3)
-
+                    x1 = int(input('Вывести конкретного?(цифра) '))
+                    print (search(x1))
                if x==4:
                     print(a4)
-
+                    x1 = int(input('Вывести конкретного?(цифра) '))
+                    print (search(x1))
                if x==5:
                     print(a5)
+                    x1 = int(input('Вывести конкретного?(цифра) '))
+                    print (search(x1))
     else:
        print('Выбран не верный вариант!')
     print('Для продолжения нажмите 1, иначе будет выход из программы')
