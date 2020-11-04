@@ -1,20 +1,21 @@
 import openpyxl
 from openpyxl import Workbook
 from openpyxl import load_workbook
+
+from docxtpl import DocxTemplate
 #Функция поиска и вывода строки из экселя
 def search (x1):
     if (x1 < a) and (x1 > 0):
-        x1 = x1 - 1
-        z = a1[x1], a2[x1], a3[x1],a4[x1], a5[x1]
-        return z
+        x1 = x1-1
+        return (dict['a1'][x1],dict['a2'][x1],dict['a3'][x1],dict['a4'][x1],dict['a5'][x1])
     else:
-        return print('Такого нет!')
-
+        return ('Такого нет!')
+#Функция записывающая столбец в элемент
 def sbor (x, y, z):
     for cellObj in sheet[ y : z]:
       for cell in cellObj:
           x.append(cell.value)
-'''
+
 #Начинаем создавать файл
 wb = Workbook()
 ws = wb.active
@@ -33,7 +34,7 @@ ws.append([5, 'Кто живой', 'жизнь', 'Доцент', 'Д101'])
 #Сохраняем файл
 wb.save("sample.xlsx")
 wb.close()
-'''
+
 #Загружаем файл
 wb = load_workbook('sample.xlsx')
 sheet = wb.get_sheet_by_name('Sheet')
@@ -48,23 +49,30 @@ if x == 1:
             print(cell.value)
         print('--- Конец строки ---')
 
-#Сбор данных по отдельным массивам
-a1=[]
+#Сбор данных по отдельным массивам словарь
+dict = {'a1':[], 'a2':[], 'a3':[], 'a4':[], 'a5':[]}
 ba = 'A' + str(a)
-sbor(a1, 'A2', ba)
-a2=[]
+sbor(dict['a1'], 'A2', ba)
 ba = 'B' + str(a)
-sbor(a2, 'B2', ba)
-a3=[]
+sbor(dict['a2'], 'B2', ba)
 ba = 'C' + str(a)
-sbor(a3, 'C2', ba)
-a4=[]
+sbor(dict['a3'], 'C2', ba)
 ba = 'D' + str(a)
-sbor(a4, 'D2', ba)
-a5=[]
+sbor(dict['a4'], 'D2', ba)
 ba = 'E' + str(a)
-sbor(a5, 'E2', ba)
-#Вывод определённого столбца на экран
+sbor(dict['a5'], 'E2', ba)
+
+#Перенос текста в ворд в определённые места
+doc = DocxTemplate("шаблон.docx")
+for i in range(a):
+    context = { 'FIO' : dict['a2'][1], 'Predm' : dict['a3'][1], 'Stepen' : dict['a4'][1], 'Kab' : dict
+
+['a5'][1]}
+    doc.render(context)
+    doc.save("шаблон-final.docx")
+
+#Вывод определённого столбца на экран 
+
 z=1
 while z != 0:
     print('Выберите какой столбик вывести на экран: ')
@@ -76,23 +84,23 @@ while z != 0:
     x = int(input('Ваш выбор – '))
     if  1<=x<=5:
                if x==1:
-                    print(a1)
+                    print(dict['a1'])
                     x1 = int(input('Вывести конкретного?(цифра) '))
                     print (search(x1))
                if x==2:
-                    print(a2)
+                    print(dict['a2'])
                     x1 = int(input('Вывести конкретного?(цифра) '))
                     print (search(x1))
                if x==3:
-                    print(a3)
+                    print(dict['a3'])
                     x1 = int(input('Вывести конкретного?(цифра) '))
                     print (search(x1))
                if x==4:
-                    print(a4)
+                    print(dict['a4'])
                     x1 = int(input('Вывести конкретного?(цифра) '))
                     print (search(x1))
                if x==5:
-                    print(a5)
+                    print(dict['a5'])
                     x1 = int(input('Вывести конкретного?(цифра) '))
                     print (search(x1))
     else:
@@ -101,3 +109,18 @@ while z != 0:
     b=int(input())
     if b!=1:
         z-=1
+
+
+# Создание таблицы в ворде
+#import docx
+#doc = docx.Document('шаблон.docx')
+#table = doc.add_table(rows = a, cols = 4)
+#table.style = 'Table Grid'
+#aa = a-1
+#for row in range(aa):
+#    for col in range(1):
+#        # получаем ячейку таблицы
+#        cell = table.cell(row, col)
+#        # записываем в ячейку данные
+#        cell.text =  ???     #Надо продумать заполнение таблицы
+#doc.save('table.docx')
