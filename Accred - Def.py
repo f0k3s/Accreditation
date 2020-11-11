@@ -28,6 +28,14 @@ def Tablet():
     table.style = 'Table Grid'
 Tablet()
 
+###Замена текста
+def WordChange():
+    for paragraph in document.paragraphs:
+        paragraph.text = paragraph.text.replace("ист", "Такое вот предложение")
+
+
+WordChange()
+
 doc.save('Testoooo.docx')
 
 
