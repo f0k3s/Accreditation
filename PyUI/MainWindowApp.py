@@ -20,6 +20,12 @@ from TeacherSelector import Ui_TeacherSelection
 from GNEditor import Ui_GNReference
 from AudienceEditor import Ui_AudiencerReference
 
+#Импорт функций генерации документов
+import DocxGeneratingDef
+#Импорт функции для конвертации файла
+import convertDocxToPDF
+
+
 """Инициализация классов интерфейса для их вызова в приложении"""
 
 #Класс выбора преподавателя и дисциплины
@@ -161,10 +167,39 @@ class MainAppWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     #Функция вызова файлового менеджера
     def openFile(self):
         self.filenameDocx = QtWidgets.QFileDialog.getOpenFileName(self, "Выберите файл", os.getcwd(), ".DOCX Файлы (*.docx)")
-       
+        directory=str(self.filenameDocx)
+        docxDirectory=""
+        counter=0
+        for i  in range(2,len(directory)):
+            if directory[i]=="\'":
+                counter+=1
+            if counter<1:
+                docxDirectory=docxDirectory+directory[i]
+
+        self.filenamePDF = QtWidgets.QFileDialog.getSaveFileName(self, "Выберите файл", os.getcwd(), ".pdf Файлы (*.pdf)")
+        directory=str(self.filenamePDF)
+        PDFDirectory=""
+        counter=0
+        for i  in range(2,len(directory)):
+            if directory[i]=="\'":
+                counter+=1
+            if counter<1:
+                PDFDirectory=PDFDirectory+directory[i]
+
+        convertDocxToPDF.convertDocxToPdf(docxDirectory,PDFDirectory)
 
     def saveFile(self):
         self.filename=QtWidgets.QFileDialog.getSaveFileName(self, "Выберите файл", os.getcwd(), ".DOCX Файлы (*.docx)")
+        directory=str(self.filename)
+        cleanDirectory=""
+        counter=0
+        for i  in range(2,len(directory)):
+            if directory[i]=="\'":
+                counter+=1
+            if counter<1:
+                cleanDirectory=cleanDirectory+directory[i]
+
+        DocxGeneratingDef.allInOne(cleanDirectory)
 
     """Функции вызова дочерних окон"""
     def openTeacherSelector(self):
