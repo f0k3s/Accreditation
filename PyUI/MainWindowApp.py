@@ -19,6 +19,8 @@ from UPEditor import Ui_UPReference
 from TeacherSelector import Ui_TeacherSelection
 from GNEditor import Ui_GNReference
 from AudienceEditor import Ui_AudiencerReference
+from AudienceDB_Edit import Ui_Audience_Editor
+from KODB_Editor import Ui_KO_Editor
 
 #Импорт функций генерации документов
 import DocxGeneratingDef
@@ -50,14 +52,11 @@ class TeacherSelectorWindow(QtWidgets.QWidget, Ui_TeacherSelection):
 
 
 #Класс редактора аудиторий
-class AudienceEditorWindow(QtWidgets.QWidget, Ui_AudiencerReference):
+class AudienceEditorWindow(QtWidgets.QMainWindow, Ui_Audience_Editor):
     def __init__(self,parent=None):
         super(AudienceEditorWindow, self).__init__(parent)
         self.setupUi(self)
         self.parent=parent
-
-        self.pb_ExitAudience.clicked.connect(self.closeEvent)
-        self.pb_SaveAudience.clicked.connect(self.closeEvent)
 
     def closeEvent(self,event):
         self.MainAppWindowShow=MainAppWindow()
@@ -98,14 +97,11 @@ class PPSEditorWindow(QtWidgets.QWidget, Ui_PPSReference):
 
 
 #Класс Редактирования КО
-class KOEditorWindow(QtWidgets.QWidget, Ui_KOReference):
+class KOEditorWindow(QtWidgets.QMainWindow, Ui_KO_Editor):
     def __init__(self,parent=None):
         super(KOEditorWindow, self).__init__(parent)
         self.setupUi(self)
         self.parent=parent
-
-        self.pb_ExitKO.clicked.connect(self.closeEvent)
-        self.pb_saveKO.clicked.connect(self.closeEvent)
 
     def closeEvent(self,event):
         self.MainAppWindowShow=MainAppWindow()
@@ -163,6 +159,7 @@ class MainAppWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.action_UP.triggered.connect(self.openUPEditor)
         self.pb_Group.clicked.connect(self.openGNEditor)
         self.pb_MTOChange.clicked.connect(self.openAudienceEditor)
+        self.action_Audience.triggered.connect(self.openAudienceEditor)
 
     #Функция вызова файлового менеджера
     def openFile(self):
