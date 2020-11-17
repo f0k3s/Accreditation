@@ -36,6 +36,16 @@ def WordChange():
 
 WordChange()
 
+###Замена текста в таблице
+def TableChange():
+    for table in document.tables:
+        for row in table.rows:
+            for cell in row.cells:
+                for paragraph in cell.paragraphs:
+                    paragraph.text = paragraph.text.replace("текст", "на текст")
+
+TableChange()
+
 doc.save('Testoooo.docx')
 
 
