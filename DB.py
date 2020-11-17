@@ -1,8 +1,10 @@
-import openpyxl
-from openpyxl import Workbook
-from openpyxl import load_workbook
+import openpyxl                    #Библиотека для работы с Экселем
+from openpyxl import Workbook      #Для создания
+from openpyxl import load_workbook #Для загрузки
+import docx                        #Для работы с вордом
+from docx import Document
+from docxtpl import DocxTemplate   #Для переноса информации в ворд
 
-from docxtpl import DocxTemplate
 #Функция поиска и вывода строки из экселя
 def search (x1):
     if (x1 < a) and (x1 > 0):
@@ -16,29 +18,31 @@ def sbor (x, y, z):
       for cell in cellObj:
           x.append(cell.value)
 
-#Начинаем создавать файл
-wb = Workbook()
-ws = wb.active
+#Функция сохраняющая данные в таблицу ворд
+def word(z2):
+    z2 -= 1
 
-ws['A1'] = '№'
-ws['B1'] = 'ФИО'
-ws['C1'] = 'Предмет'
-ws['D1'] = 'Уч.степень'
-ws['E1'] = 'Кабинет'
-ws.append([1, 'Пётр Перов', 'информатика', 'Доцент', 'А262'])
-ws.append([2, 'Владимир Владимирович', 'бокс', 'Старший преподаватель', 'Б104'])
-ws.append([3, 'ФИО', 'физика', 'Доцент', 'В303'])
-ws.append([4, 'Человек человеков', 'математика', 'Профессор', 'Г415'])
-ws.append([5, 'Кто живой', 'жизнь', 'Доцент', 'Д101'])
+    doc1 = DocxTemplate("table.docx")
+    context = { 'FIO' : dict['a2'][z2], 'Predm' : dict['a3'][z2], 'Stepen' : dict['a4'][z2], 'Kab' : dict['a5'][z2]}
+    doc1.render(context)
+    doc1.save("table-final.docx")
 
-#Сохраняем файл
-wb.save("sample.xlsx")
-wb.close()
+    document = Document('table-final.docx')
+    table = document.add_table(rows=1, cols=4, style='Table Grid')
+    row = table.rows[0]
+    row.cells[0].text = "{{FIO}}"
+    row.cells[1].text = "{{Predm}}"
+    row.cells[2].text = "{{Stepen}}"
+    row.cells[3].text = "{{Kab}}"
+    row.cells[0].add_table(rows = 4, cols = 1)
+    document.save('table.docx')
+
 
 #Загружаем файл
 wb = load_workbook('sample.xlsx')
 sheet = wb.get_sheet_by_name('Sheet')
-a = int(input('Сколько строк? '))
+# = int(input('Сколько строк? '))
+a=5
 a = a + 1
 b = 'E' + str(a)
 #Вывести на экран
@@ -61,15 +65,6 @@ ba = 'D' + str(a)
 sbor(dict['a4'], 'D2', ba)
 ba = 'E' + str(a)
 sbor(dict['a5'], 'E2', ba)
-
-#Перенос текста в ворд в определённые места
-doc = DocxTemplate("шаблон.docx")
-for i in range(a):
-    context = { 'FIO' : dict['a2'][1], 'Predm' : dict['a3'][1], 'Stepen' : dict['a4'][1], 'Kab' : dict
-
-['a5'][1]}
-    doc.render(context)
-    doc.save("шаблон-final.docx")
 
 #Вывод определённого столбца на экран 
 
@@ -110,17 +105,24 @@ while z != 0:
     if b!=1:
         z-=1
 
+    document = Document()
+    table = document.add_table(rows=1, cols=4, style='Table Grid')
+    row = table.rows[0]
+    row.cells[0].text = "{{FIO}}"
+    row.cells[1].text = "{{Predm}}"
+    row.cells[2].text = "{{Stepen}}"
+    row.cells[3].text = "{{Kab}}"
+    row.cells[0].add_table(rows = 4, cols = 1)
+    document.save('table.docx')
 
-# Создание таблицы в ворде
-#import docx
-#doc = docx.Document('шаблон.docx')
-#table = doc.add_table(rows = a, cols = 4)
-#table.style = 'Table Grid'
-#aa = a-1
-#for row in range(aa):
-#    for col in range(1):
-#        # получаем ячейку таблицы
-#        cell = table.cell(row, col)
-#        # записываем в ячейку данные
-#        cell.text =  ???     #Надо продумать заполнение таблицы
-#doc.save('table.docx')
+z3=1
+while z3 != 0:
+    print('Введите номер строки из экселя и каким он будет в ворде')
+    z2= int(input('Из экселя: '))
+    if  1<=z2<a:
+        word(z2)
+    else:
+        print('Выбран не верный вариант!')
+    b=int(input('Для продолжения нажмите 1, иначе будет выход из программы: '))
+    if b!=1:
+        z3-=1
