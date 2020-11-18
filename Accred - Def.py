@@ -2,7 +2,7 @@ import docx
 import pandas as pd
 import numpy as np
 
-doc = docx.Document()
+doc = docx.Document('Testoooo.docx')
 df = pd.DataFrame()
 
 ###Создать заголовок
@@ -30,7 +30,7 @@ Tablet()
 
 ###Замена текста
 def WordChange():
-    for paragraph in document.paragraphs:
+    for paragraph in doc.paragraphs:
         paragraph.text = paragraph.text.replace("ист", "Такое вот предложение")
 
 
@@ -38,7 +38,7 @@ WordChange()
 
 ###Замена текста в таблице
 def TableChange():
-    for table in document.tables:
+    for table in doc.tables:
         for row in table.rows:
             for cell in row.cells:
                 for paragraph in cell.paragraphs:
