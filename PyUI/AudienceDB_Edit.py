@@ -124,12 +124,79 @@ class Ui_Audience_Editor(object):
         self.pb_Add.setText(_translate("Audience_Editor", "Добавить"))
         self.pb_Delete.setText(_translate("Audience_Editor", "Удалить"))
 
+class AudNameDialog(QtWidgets.QDialog):
+    def setupUi(self,Dialog):
+        
+        self.verticalLayout = QtWidgets.QVBoxLayout(self)
+        self.verticalLayout.setObjectName("verticalLayout")
+        self.label=QtWidgets.QLabel(self)
+        self.label.setObjectName("label")
+        self.label.setText("Неверно введено имя аудитории. Пример: Г-101")
+        self.verticalLayout.addWidget(self.label)
+        self.pushButton = QtWidgets.QPushButton(self)
+        self.pushButton.setObjectName("pushButton")
+        self.pushButton.clicked.connect(self.btnClosed)
+        self.verticalLayout.addWidget(self.pushButton)
+        self.setWindowTitle("Ошибка!")
+        self.pushButton.setText("Понимаю")
 
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    Audience_Editor = QtWidgets.QMainWindow()
-    ui = Ui_Audience_Editor()
-    ui.setupUi(Audience_Editor)
-    Audience_Editor.show()
-    sys.exit(app.exec_())
+    def btnClosed(self):
+        self.close()
+
+class AudNaimDialog(QtWidgets.QDialog):
+    def setupUi(self,Dialog):
+        
+        self.verticalLayout = QtWidgets.QVBoxLayout(self)
+        self.verticalLayout.setObjectName("verticalLayout")
+        self.label=QtWidgets.QLabel(self)
+        self.label.setObjectName("label")
+        self.label.setText("Неверно наименование аудитории (не должно содержать специальных символов)")
+        self.verticalLayout.addWidget(self.label)
+        self.pushButton = QtWidgets.QPushButton(self)
+        self.pushButton.setObjectName("pushButton")
+        self.pushButton.clicked.connect(self.btnClosed)
+        self.verticalLayout.addWidget(self.pushButton)
+        self.setWindowTitle("Ошибка!")
+        self.pushButton.setText("Понимаю")
+
+    def btnClosed(self):
+        self.close()
+
+class AudTODialog(QtWidgets.QDialog):
+    def setupUi(self,Dialog):
+        
+        self.verticalLayout = QtWidgets.QVBoxLayout(self)
+        self.verticalLayout.setObjectName("verticalLayout")
+        self.label=QtWidgets.QLabel(self)
+        self.label.setObjectName("label")
+        self.label.setText("Неверно введено наименование аудитории")
+        self.verticalLayout.addWidget(self.label)
+        self.pushButton = QtWidgets.QPushButton(self)
+        self.pushButton.setObjectName("pushButton")
+        self.pushButton.clicked.connect(self.btnClosed)
+        self.verticalLayout.addWidget(self.pushButton)
+        self.setWindowTitle("Ошибка!")
+        self.pushButton.setText("Понимаю")
+
+    def btnClosed(self):
+        self.close()
+
+class AudPODialog(QtWidgets.QDialog):
+    def setupUi(self,Dialog):
+        
+        self.verticalLayout = QtWidgets.QVBoxLayout(self)
+        self.verticalLayout.setObjectName("verticalLayout")
+        self.label=QtWidgets.QLabel(self)
+        self.label.setObjectName("label")
+        self.label.setText("Неверно введено ПО аудитории")
+        self.verticalLayout.addWidget(self.label)
+        self.pushButton = QtWidgets.QPushButton(self)
+        self.pushButton.setObjectName("pushButton")
+        self.pushButton.clicked.connect(self.btnClosed)
+        self.verticalLayout.addWidget(self.pushButton)
+        self.setWindowTitle("Ошибка!")
+        self.pushButton.setText("Понимаю")
+
+    def btnClosed(self):
+        self.close()
+

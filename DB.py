@@ -22,7 +22,7 @@ def sbor (x, y, z):
 def word(z2):
     z2 -= 1
 
-    doc1 = DocxTemplate("table.docx")
+    doc1 = DocxTemplate("D:\\GitHub\\Accreditation\\TESST.docx")
     context = { 'FIO' : dict['a2'][z2], 'Predm' : dict['a3'][z2], 'Stepen' : dict['a4'][z2], 'Kab' : dict['a5'][z2]}
     doc1.render(context)
     doc1.save("table-final.docx")
@@ -35,11 +35,11 @@ def word(z2):
     row.cells[2].text = "{{Stepen}}"
     row.cells[3].text = "{{Kab}}"
     row.cells[0].add_table(rows = 4, cols = 1)
-    document.save('table.docx')
+    document.save('TESST.docx')
 
 
 #Загружаем файл
-wb = load_workbook('sample.xlsx')
+wb = load_workbook('D:\\GitHub\\Accreditation\\sample.xlsx')
 sheet = wb.get_sheet_by_name('Sheet')
 # = int(input('Сколько строк? '))
 a=5
@@ -113,7 +113,7 @@ while z != 0:
     row.cells[2].text = "{{Stepen}}"
     row.cells[3].text = "{{Kab}}"
     row.cells[0].add_table(rows = 4, cols = 1)
-    document.save('table.docx')
+    document.save('D:\\GitHub\\Accreditation\\TESST.docx')
 
 z3=1
 while z3 != 0:

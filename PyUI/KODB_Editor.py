@@ -134,12 +134,7 @@ class Ui_KO_Editor(object):
         self.le_FIO = QtWidgets.QLineEdit(self.verticalGroupBox)
         self.le_FIO.setObjectName("le_FIO")
         self.gridLayout_7.addWidget(self.le_FIO, 1, 0, 1, 2)
-        self.le_Privlech = QtWidgets.QLineEdit(self.verticalGroupBox)
-        self.le_Privlech.setObjectName("le_Privlech")
-        self.gridLayout_7.addWidget(self.le_Privlech, 3, 0, 1, 2)
         self.label_2 = QtWidgets.QLabel(self.verticalGroupBox)
-        self.label_2.setObjectName("label_2")
-        self.gridLayout_7.addWidget(self.label_2, 2, 0, 1, 2)
         self.label = QtWidgets.QLabel(self.verticalGroupBox)
         self.label.setObjectName("label")
         self.gridLayout_7.addWidget(self.label, 0, 0, 1, 2)
@@ -190,20 +185,18 @@ class Ui_KO_Editor(object):
         KO_Editor.setWindowTitle(_translate("KO_Editor", "MainWindow"))
         self.tb_KO.setSortingEnabled(True)
         item = self.tb_KO.horizontalHeaderItem(0)
-        item.setText(_translate("KO_Editor", "Новый столбец"))
-        item = self.tb_KO.horizontalHeaderItem(1)
         item.setText(_translate("KO_Editor", "ФИО"))
-        item = self.tb_KO.horizontalHeaderItem(2)
+        item = self.tb_KO.horizontalHeaderItem(1)
         item.setText(_translate("KO_Editor", "Усл. привлечения"))
-        item = self.tb_KO.horizontalHeaderItem(3)
+        item = self.tb_KO.horizontalHeaderItem(2)
         item.setText(_translate("KO_Editor", "Должн., у.с., у.з."))
-        item = self.tb_KO.horizontalHeaderItem(4)
+        item = self.tb_KO.horizontalHeaderItem(3)
         item.setText(_translate("KO_Editor", "Должность."))
-        item = self.tb_KO.horizontalHeaderItem(5)
+        item = self.tb_KO.horizontalHeaderItem(4)
         item.setText(_translate("KO_Editor", "Уч. звание"))
-        item = self.tb_KO.horizontalHeaderItem(6)
+        item = self.tb_KO.horizontalHeaderItem(5)
         item.setText(_translate("KO_Editor", "Напр. подготовки"))
-        item = self.tb_KO.horizontalHeaderItem(7)
+        item = self.tb_KO.horizontalHeaderItem(6)
         item.setText(_translate("KO_Editor", "Доп. образование"))
         self.label_4.setText(_translate("KO_Editor", "Перечень читаемых дисциплин:"))
         self.chB_Deal.setText(_translate("KO_Editor", "По договору ГСХ"))
@@ -224,7 +217,6 @@ class Ui_KO_Editor(object):
         self.cb_zvan.setItemText(0, _translate("KO_Editor", "Нет ученого звания"))
         self.cb_zvan.setItemText(1, _translate("KO_Editor", "Доцент"))
         self.cb_zvan.setItemText(2, _translate("KO_Editor", "Профессор"))
-        self.label_2.setText(_translate("KO_Editor", "Условия привлечения:"))
         self.label.setText(_translate("KO_Editor", "ФИО преподавателя:"))
         self.label_5.setText(_translate("KO_Editor", "Уровень образования, \n"
 "наименование специальности, направления подготовки, наименование присвоенной квалификации:"))
@@ -233,3 +225,63 @@ class Ui_KO_Editor(object):
         self.pb_Edit.setText(_translate("KO_Editor", "Редактировать"))
         self.pb_Add.setText(_translate("KO_Editor", "Добавить"))
         self.pb_Delete.setText(_translate("KO_Editor", "Удалить"))
+
+
+class FIODialog(QtWidgets.QDialog):
+    def setupUi(self,Dialog):
+        
+        self.verticalLayout = QtWidgets.QVBoxLayout(self)
+        self.verticalLayout.setObjectName("verticalLayout")
+        self.label=QtWidgets.QLabel(self)
+        self.label.setObjectName("label")
+        self.label.setText("Неверно введено ФИО преподавателя")
+        self.verticalLayout.addWidget(self.label)
+        self.pushButton = QtWidgets.QPushButton(self)
+        self.pushButton.setObjectName("pushButton")
+        self.pushButton.clicked.connect(self.btnClosed)
+        self.verticalLayout.addWidget(self.pushButton)
+        self.setWindowTitle("Ошибка!")
+        self.pushButton.setText("Понимаю")
+
+    def btnClosed(self):
+        self.close()
+
+class NaprPodgotovDialog(QtWidgets.QDialog):
+    def setupUi(self,Dialog):
+        
+        self.verticalLayout = QtWidgets.QVBoxLayout(self)
+        self.verticalLayout.setObjectName("verticalLayout")
+        self.label=QtWidgets.QLabel(self)
+        self.label.setObjectName("label")
+        self.label.setText("Неверно введен уровень образования, наименование специальности, направления подготовки, наименование присвоенной квалификации")
+        self.verticalLayout.addWidget(self.label)
+        self.pushButton = QtWidgets.QPushButton(self)
+        self.pushButton.setObjectName("pushButton")
+        self.pushButton.clicked.connect(self.btnClosed)
+        self.verticalLayout.addWidget(self.pushButton)
+        self.setWindowTitle("Ошибка!")
+        self.pushButton.setText("Понимаю")
+
+    def btnClosed(self):
+        self.close()
+
+class EducationDialog(QtWidgets.QDialog):
+    def setupUi(self,Dialog):
+        
+        self.verticalLayout = QtWidgets.QVBoxLayout(self)
+        self.verticalLayout.setObjectName("verticalLayout")
+        self.label=QtWidgets.QLabel(self)
+        self.label.setObjectName("label")
+        self.label.setText("Неверно введены сведения о дополнительном профессиональном образовании ")
+        self.verticalLayout.addWidget(self.label)
+        self.pushButton = QtWidgets.QPushButton(self)
+        self.pushButton.setObjectName("pushButton")
+        self.pushButton.clicked.connect(self.btnClosed)
+        self.verticalLayout.addWidget(self.pushButton)
+        self.setWindowTitle("Ошибка!")
+        self.pushButton.setText("Понимаю")
+
+    def btnClosed(self):
+        self.close()
+
+    

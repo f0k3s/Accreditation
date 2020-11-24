@@ -13,20 +13,19 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 """Импорт файлов интерфейса"""
 from PPSEditor import Ui_PPSReference
 from MainWindow import Ui_MainWindow
-from KOEditor import Ui_KOReference
 from UPSelector import Ui_UPSelection
 from UPEditor import Ui_UPReference
 from TeacherSelector import Ui_TeacherSelection
 from GNEditor import Ui_GNReference
-from AudienceEditor import Ui_AudiencerReference
-from AudienceDB_Edit import Ui_Audience_Editor
-from KODB_Editor import Ui_KO_Editor
+from AudienceDB_Edit import *
+from KODB_Editor import *
 
 #Импорт функций генерации документов
 import DocxGeneratingDef
 #Импорт функции для конвертации файла
 import convertDocxToPDF
-
+#Импорт валидатора
+import Validator
 
 """Инициализация классов интерфейса для их вызова в приложении"""
 
@@ -52,16 +51,69 @@ class TeacherSelectorWindow(QtWidgets.QWidget, Ui_TeacherSelection):
 
 
 #Класс редактора аудиторий
-class AudienceEditorWindow(QtWidgets.QMainWindow, Ui_Audience_Editor):
-    def __init__(self,parent=None):
-        super(AudienceEditorWindow, self).__init__(parent)
-        self.setupUi(self)
-        self.parent=parent
+class AudienceEditorWindow(QtWidgets.QMainWindow):
+    def __init__(self):
+        super(AudienceEditorWindow, self).__init__()
+
+        self.counter=0
+
+        self.ui=Ui_Audience_Editor()
+
+        self.ANDialogUi=AudNameDialog()
+        self.ANDialogUi.setupUi(self)
+
+        self.ANMDialogUi=AudNaimDialog()
+        self.ANMDialogUi.setupUi(self)
+
+        self.ATDialogUi=AudTODialog()
+        self.ATDialogUi.setupUi(self)
+
+        self.APDialogUi=AudPODialog()
+        self.APDialogUi.setupUi(self)
+
+        self.ui.setupUi(self)
+
+        self.ui.pb_Add.clicked.connect(self.validation)
 
     def closeEvent(self,event):
         self.MainAppWindowShow=MainAppWindow()
         self.MainAppWindowShow.show()
         self.close()
+
+    #Валидатор полей справочника аудиторий
+    def validation(self):
+        self.AudValid=Validator.AudienceValidator()
+
+        self.AudName=self.ui.le_AudienceName.text()
+
+        self.AudNaim=self.ui.tE_Naimen.toPlainText()
+        self.AudTO=self.ui.tE_AudienceTO.toPlainText()
+        self.AudPO=self.ui.tE_PO.toPlainText()
+
+        if (self.AudValid.AudNameValid(self.AudName))==True:
+            print("True")
+            self.counter+=1
+        else:
+            self.ANDialogUi.show()
+        
+        if (self.AudValid.AudNaimenValid(self.AudNaim))==True:
+                print("True")
+                self.counter+=1
+        else:
+            self.ANMDialogUi.show()
+
+        if (self.AudValid.AudTOValid(self.AudTO))==True:
+                print("True")
+                self.counter+=1
+        else:
+            self.ATDialogUi.show()
+
+        if (self.AudValid.AudPOValid(self.AudPO))==True:
+                print("True")
+                self.counter+=1
+        else:
+            self.APDialogUi.show()
+            
 
 
 #Класс выбора группы
@@ -81,11 +133,23 @@ class GNEditorWindow(QtWidgets.QWidget, Ui_GNReference):
 
 
 #Класс редактирования ППС
-class PPSEditorWindow(QtWidgets.QWidget, Ui_PPSReference):
-    def __init__(self,parent=None):
-        super(PPSEditorWindow, self).__init__(parent)
+class PPSEditorWindow(QtWidgets.QWidget):
+    def __init__(self):
+        super(PPSEditorWindow, self).__init__()
+        self.ui=Ui_KO_Editor()
         self.setupUi(self)
-        self.parent=parent
+
+        self.counter=0
+
+        self.ANDialogUi=AudNameDialog()
+        self.ANDialogUi.setupUi(self)
+
+        self.ANMDialogUi=AudNaimDialog()
+        self.ANMDialogUi.setupUi(self)
+
+        self.ATDialogUi=AudTODialog()
+        self.ATDialogUi.setupUi(self)
+
 
         self.pb_editPPS.clicked.connect(self.closeEvent)
         self.pb_savePPS.clicked.connect(self.closeEvent)
@@ -94,6 +158,40 @@ class PPSEditorWindow(QtWidgets.QWidget, Ui_PPSReference):
         self.TeacherSelectionWindow=TeacherSelectorWindow()
         self.TeacherSelectionWindow.show()
         self.hide()
+
+    #Валидатор полей справочника аудиторий
+    """def validation(self):
+        self.AudValid=Validator.AudienceValidator()
+
+        self.AudName=self.ui.le_AudienceName.text()
+
+        self.AudNaim=self.ui.tE_Naimen.toPlainText()
+        self.AudTO=self.ui.tE_AudienceTO.toPlainText()
+        self.AudPO=self.ui.tE_PO.toPlainText()
+
+        if (self.AudValid.AudNameValid(self.AudName))==True:
+            print("True")
+            self.counter+=1
+        else:
+            self.ANDialogUi.show()
+        
+        if (self.AudValid.AudNaimenValid(self.AudNaim))==True:
+                print("True")
+                self.counter+=1
+        else:
+            self.ANMDialogUi.show()
+
+        if (self.AudValid.AudTOValid(self.AudTO))==True:
+                print("True")
+                self.counter+=1
+        else:
+            self.ATDialogUi.show()
+
+        if (self.AudValid.AudPOValid(self.AudPO))==True:
+                print("True")
+                self.counter+=1
+        else:
+            self.APDialogUi.show()"""
 
 
 #Класс Редактирования КО
@@ -230,6 +328,10 @@ class MainAppWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.hide()
   
   
+    
+
+
+
 #Вызов программы
 if __name__ == "__main__":
     app=QtWidgets.QApplication(sys.argv)

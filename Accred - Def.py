@@ -2,7 +2,7 @@ import docx
 import pandas as pd
 import numpy as np
 
-doc = docx.Document('Testoooo.docx')
+doc = docx.Document('D:\\GitHub\\Accreditation\\Test.docx')
 df = pd.DataFrame()
 
 ###Создать заголовок
@@ -10,7 +10,7 @@ def Title():
     TextH=input("Введите заголовок: ")
     StyleH=int(input("Стиль: "))
     doc.add_heading(TextH, StyleH)
-Title()
+#Title()
 
 ###Новый абзац и добавление текста
 def Paragraph():
@@ -42,11 +42,11 @@ def TableChange():
         for row in table.rows:
             for cell in row.cells:
                 for paragraph in cell.paragraphs:
-                    paragraph.text = paragraph.text.replace("текст", "на текст")
+                    paragraph.text = paragraph.text.replace("fffffffffffffffff", "123")
 
 TableChange()
 
-doc.save('Testoooo.docx')
+doc.save('D:\\GitHub\\Accreditation\\Test.docx')
 
 
 
