@@ -134,77 +134,68 @@ class GNEditorWindow(QtWidgets.QWidget, Ui_GNReference):
 
 #Класс редактирования ППС
 class PPSEditorWindow(QtWidgets.QWidget):
-    def __init__(self):
-        super(PPSEditorWindow, self).__init__()
-        self.ui=Ui_KO_Editor()
+    def __init__(self,parent=None):
+        super(PPSEditorWindow, self).__init__(parent)
+        self.parent=parent
         self.setupUi(self)
-
-        self.counter=0
-
-        self.ANDialogUi=AudNameDialog()
-        self.ANDialogUi.setupUi(self)
-
-        self.ANMDialogUi=AudNaimDialog()
-        self.ANMDialogUi.setupUi(self)
-
-        self.ATDialogUi=AudTODialog()
-        self.ATDialogUi.setupUi(self)
-
-
-        self.pb_editPPS.clicked.connect(self.closeEvent)
-        self.pb_savePPS.clicked.connect(self.closeEvent)
 
     def closeEvent(self,event):
         self.TeacherSelectionWindow=TeacherSelectorWindow()
         self.TeacherSelectionWindow.show()
         self.hide()
 
-    #Валидатор полей справочника аудиторий
-    """def validation(self):
-        self.AudValid=Validator.AudienceValidator()
-
-        self.AudName=self.ui.le_AudienceName.text()
-
-        self.AudNaim=self.ui.tE_Naimen.toPlainText()
-        self.AudTO=self.ui.tE_AudienceTO.toPlainText()
-        self.AudPO=self.ui.tE_PO.toPlainText()
-
-        if (self.AudValid.AudNameValid(self.AudName))==True:
-            print("True")
-            self.counter+=1
-        else:
-            self.ANDialogUi.show()
-        
-        if (self.AudValid.AudNaimenValid(self.AudNaim))==True:
-                print("True")
-                self.counter+=1
-        else:
-            self.ANMDialogUi.show()
-
-        if (self.AudValid.AudTOValid(self.AudTO))==True:
-                print("True")
-                self.counter+=1
-        else:
-            self.ATDialogUi.show()
-
-        if (self.AudValid.AudPOValid(self.AudPO))==True:
-                print("True")
-                self.counter+=1
-        else:
-            self.APDialogUi.show()"""
-
 
 #Класс Редактирования КО
-class KOEditorWindow(QtWidgets.QMainWindow, Ui_KO_Editor):
-    def __init__(self,parent=None):
-        super(KOEditorWindow, self).__init__(parent)
-        self.setupUi(self)
-        self.parent=parent
+class KOEditorWindow(QtWidgets.QMainWindow):
+    def __init__(self,):
+        super(KOEditorWindow, self).__init__()
+        self.ui=Ui_KO_Editor()
+        self.ui.setupUi(self)
+        self.counter=0
+
+        self.FIODialogUi=FIODialog()
+        self.FIODialogUi.setupUi(self)
+
+        self.NaprPodgotovDialogUi=NaprPodgotovDialog()
+        self.NaprPodgotovDialogUi.setupUi(self)
+
+        self.EducationDialogUi=EducationDialog()
+        self.EducationDialogUi.setupUi(self)
+
+        self.ui.pb_Add.clicked.connect(self.validation)
 
     def closeEvent(self,event):
         self.MainAppWindowShow=MainAppWindow()
         self.MainAppWindowShow.show()
         self.close()
+
+    
+    #Валидатор полей справочника аудиторий
+    def validation(self):
+        self.PPSValid=Validator.PPSValidator()
+
+        self.FIO=self.ui.le_FIO.text()
+
+        self.NaprPodgotov=self.ui.tE_NaprPodgotov.toPlainText()
+        self.Education=self.ui.tE_NaprPodgotov.toPlainText()
+
+        if (self.PPSValid.FIOValid(self.FIO))==True:
+            print("True")
+            self.counter+=1
+        else:
+            self.FIODialogUi.show()
+        
+        if (self.PPSValid.NaprPodgotov(self.NaprPodgotov))==True:
+                print("True")
+                self.counter+=1
+        else:
+            self.NaprPodgotovDialogUi.show()
+
+        if (self.PPSValid.EducationValid(self.Education))==True:
+                print("True")
+                self.counter+=1
+        else:
+            self.EducationDialogUi.show()
 
 
 #Класс выбора УП
