@@ -20,6 +20,9 @@ from GNEditor import Ui_GNReference
 from AudienceDB_Edit import *
 from KODB_Editor import *
 
+from Sorting import SelSortAud
+from Sorting import SelSortPPS
+
 #Импорт функций генерации документов
 import DocxGeneratingDef
 #Импорт функции для конвертации файла
@@ -54,10 +57,15 @@ class TeacherSelectorWindow(QtWidgets.QWidget, Ui_TeacherSelection):
 class AudienceEditorWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super(AudienceEditorWindow, self).__init__()
+        self.records = []
+        self.record={}
+        self.index = 0
+        self.Aaud = ""
 
         self.counter=0
 
         self.ui=Ui_Audience_Editor()
+
 
         self.ANDialogUi=AudNameDialog()
         self.ANDialogUi.setupUi(self)
@@ -71,9 +79,19 @@ class AudienceEditorWindow(QtWidgets.QMainWindow):
         self.APDialogUi=AudPODialog()
         self.APDialogUi.setupUi(self)
 
-        self.ui.setupUi(self)
 
-        self.ui.pb_Add.clicked.connect(self.validation)
+        self.ui.setupUi(self)
+        self.ui.pb_Save.clicked.connect(self.saveRecord)
+        self.ui.pb_Add.clicked.connect(self.addRecord)
+       # self.ui.pb_Add.clicked.connect(self.validation)
+        self.ui.pb_Delete.clicked.connect(self.delRecord)
+        self.ui.pb_Edit.clicked.connect(self.editRecord)
+
+        self.ui.tb_Audience.cellClicked.connect(self.ShowRecord)
+        #if self.ui.tb_Audience.cellClicked(self.ui.tb_Audience.currentRow(), self.ui.tb_Audience.currentColumn()):
+            #self.ui.pb_Edit.setEnabled(True)
+        #else:
+            #self.ui.pb_Edit.setEnabled(False)
 
     def closeEvent(self,event):
         self.MainAppWindowShow=MainAppWindow()
@@ -91,30 +109,71 @@ class AudienceEditorWindow(QtWidgets.QMainWindow):
         self.AudPO=self.ui.tE_PO.toPlainText()
 
         if (self.AudValid.AudNameValid(self.AudName))==True:
-            print("True")
-            self.counter+=1
+            if (self.AudValid.AudNaimenValid(self.AudNaim))==True:
+                if (self.AudValid.AudTOValid(self.AudTO))==True:
+                    if (self.AudValid.AudPOValid(self.AudPO))==True:
+                        return False
+                    else:
+                        self.APDialogUi.show()
+                        return False
+                else:
+                     self.ATDialogUi.show()
+                     return False
+            else:
+                self.ANMDialogUi.show()
+                return False
         else:
             self.ANDialogUi.show()
+            return False
         
-        if (self.AudValid.AudNaimenValid(self.AudNaim))==True:
-                print("True")
-                self.counter+=1
-        else:
-            self.ANMDialogUi.show()
+        
 
-        if (self.AudValid.AudTOValid(self.AudTO))==True:
-                print("True")
-                self.counter+=1
-        else:
-            self.ATDialogUi.show()
+        
 
-        if (self.AudValid.AudPOValid(self.AudPO))==True:
-                print("True")
-                self.counter+=1
-        else:
-            self.APDialogUi.show()
-            
+        
+    #Добавить запись
+    def addRecord(self):
+        if self.validation()==True:
+            self.xName = str(self.ui.le_AudienceName.text())
+            self.yName = str(self.ui.tE_AudienceTO.toPlainText())
+            self.wName = str(self.ui.tE_Naimen.toPlainText())
+            self.zName = str(self.ui.tE_PO.toPlainText())
+            self.record = {'AudienceName': self.xName, 'AudiencePO' : self.yName, 'AudienceTO': self.wName, 'AudienceNaimenovanie' : self.zName }
+            self.records.append(self.record)
+            if len(self.records)>1:
+                SelSortAud(self.records)
+            self.index = len(self.records)
+            self.rowCount= (self.records.index(self.record))
+            self.ui.tb_Audience.insertRow(self.rowCount)
+            self.ui.tb_Audience.setItem(self.rowCount, 0, QtWidgets.QTableWidgetItem(self.xName))
+            self.ui.tb_Audience.setItem(self.rowCount, 1, QtWidgets.QTableWidgetItem(self.yName))
+            self.ui.tb_Audience.setItem(self.rowCount, 2, QtWidgets.QTableWidgetItem(self.wName))
+            self.ui.tb_Audience.setItem(self.rowCount, 3, QtWidgets.QTableWidgetItem(self.zName))
 
+        
+    def delRecord(self):
+        self.ui.tb_Audience.removeRow(self.ui.tb_Audience.currentRow())
+        self.row=self.ui.tb_Audience.currentRow()
+        self.ui.tb_Audience.setCurrentCell(self.row-1,0)
+        self.records.pop(self.row)
+        
+    def editRecord(self):
+        self.ui.pb_Save.setEnabled(True)
+        self.ui.pb_Add.setEnabled(False)
+        self.ui.pb_Delete.setEnabled(False)
+        self.ui.pb_Edit.setEnabled(False)
+        self.saveRecord()
+        
+
+    def saveRecord(self):
+        self.delRecord()
+        self.addRecord()
+
+    def ShowRecord(self,row,column):
+        self.ui.le_AudienceName.setText(self.records[row].get("AudienceName"))
+        self.ui.tE_AudienceTO.setPlainText(self.records[row].get("AudienceTO"))
+        self.ui.tE_Naimen.setPlainText(self.records[row].get("AudienceNaimenovanie"))
+        self.ui.tE_PO.setPlainText(self.records[row].get("AudiencePO"))
 
 #Класс выбора группы
 class GNEditorWindow(QtWidgets.QWidget, Ui_GNReference):
@@ -180,22 +239,22 @@ class KOEditorWindow(QtWidgets.QMainWindow):
         self.Education=self.ui.tE_NaprPodgotov.toPlainText()
 
         if (self.PPSValid.FIOValid(self.FIO))==True:
-            print("True")
-            self.counter+=1
+            if (self.PPSValid.NaprPodgotov(self.NaprPodgotov))==True:
+                if (self.PPSValid.EducationValid(self.Education))==True:
+                    return True
+                else:
+                    self.EducationDialogUi.show()
+                    return False
+            else:
+                self.NaprPodgotovDialogUi.show()
+                return False
         else:
             self.FIODialogUi.show()
-        
-        if (self.PPSValid.NaprPodgotov(self.NaprPodgotov))==True:
-                print("True")
-                self.counter+=1
-        else:
-            self.NaprPodgotovDialogUi.show()
+            return False
 
-        if (self.PPSValid.EducationValid(self.Education))==True:
-                print("True")
-                self.counter+=1
-        else:
-            self.EducationDialogUi.show()
+        
+
+        
 
 
 #Класс выбора УП

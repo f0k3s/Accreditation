@@ -1,6 +1,7 @@
 """!!!Файл функции конвертации .docx в .pdf!!!"""
 
 import os
+import sys
 import comtypes.client
 import time
 
