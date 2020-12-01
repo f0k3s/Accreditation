@@ -78,7 +78,8 @@ if __name__ == "__main__":
     row.cells[0].add_table(rows = 4, cols = 1)
     document.save('table.docx')
 
-x= int(input('Сколь строчек всего? '))
+
+x= int(a[-1][0])+1
 #Перенос инфы в ворд
 z=1
 while z != 0:
