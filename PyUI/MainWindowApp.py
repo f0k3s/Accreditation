@@ -265,12 +265,15 @@ class KOEditorWindow(QtWidgets.QMainWindow):
                 self.deal = False
 
             self.row=self.ui.tb_KO.currentRow()
+            self.Dol = self.ui.cb_Dolzh.currentIndex()
             self.dRank = str(self.ui.cb_Dolzh.currentText())
+            self.Step = self.ui.cb_Stepen.currentIndex()
             self.ucRank = str(self.ui.cb_Stepen.currentText())
+            self.Zvan = self.ui.cb_zvan.currentIndex()
             self.zRank = str(self.ui.cb_zvan.currentText())
             self.nPPS = str(self.ui.tE_NaprPodgotov.toPlainText())
             self.ePPS = str(self.ui.tE_Education.toPlainText())
-            self.record = {'FIO': self.fPPS,'Uslovia': [self.state,self.inner,self.deal], "Dolzhnost": self.dRank, "Stepen": self.ucRank, "Zvanie": self.zRank, 'Napravlenie': self.nPPS, 'Education' : self.ePPS }
+            self.record = {'FIO': self.fPPS,'Uslovia': [self.state,self.inner,self.deal], "Dolzhnost": self.Dol, "Stepen": self.Step, "Zvanie": self.Zvan, 'Napravlenie': self.nPPS, 'Education' : self.ePPS }
             self.records.append(self.record)
             if len(self.records)>1:
                 SelSortPPS(self.records)
@@ -318,7 +321,10 @@ class KOEditorWindow(QtWidgets.QMainWindow):
     def saveRecord(self):
         self.delRecord()
         self.addRecord()
-
+        self.ui.pb_Save.setEnabled(False)
+        self.ui.pb_Delete.setEnabled(True)
+        self.ui.pb_Add.setEnabled(True)
+        self.ui.pb_Edit.setEnabled(True)
     def ShowRecord(self,row,column):
         self.ui.le_FIO.setText(self.records[row].get("FIO"))
         if self.records[row].get("Uslovia")[0]==True:
@@ -333,6 +339,9 @@ class KOEditorWindow(QtWidgets.QMainWindow):
             self.ui.chB_Deal.setChecked(True)
         else:
             self.ui.chB_Deal.setChecked(False)
+        self.ui.cb_Dolzh.setCurrentIndex(self.records[row].get("Dolzhnost"))
+        self.ui.cb_Stepen.setCurrentIndex(self.records[row].get("Stepen"))
+        self.ui.cb_zvan.setCurrentIndex(self.records[row].get("Zvanie"))
         self.ui.tE_NaprPodgotov.setPlainText(self.records[row].get("Napravlenie"))
         self.ui.tE_Education.setPlainText(self.records[row].get("Education"))
 
