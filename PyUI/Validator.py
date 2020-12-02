@@ -42,7 +42,7 @@ class PPSValidator:
 
     def FIOValid(self,FIO):
         Truth=False
-        RegExp= r"^([\w]+(\ )?){3}$"
+        RegExp= r"^(([А-я]+(\ ))){2}([\А-я]+){1}$"
         if re.fullmatch(RegExp,FIO)!=None:
             Truth=True
         return Truth
