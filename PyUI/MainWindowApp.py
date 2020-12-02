@@ -112,7 +112,7 @@ class AudienceEditorWindow(QtWidgets.QMainWindow):
             if (self.AudValid.AudNaimenValid(self.AudNaim))==True:
                 if (self.AudValid.AudTOValid(self.AudTO))==True:
                     if (self.AudValid.AudPOValid(self.AudPO))==True:
-                        return False
+                        return True
                     else:
                         self.APDialogUi.show()
                         return False
@@ -153,7 +153,7 @@ class AudienceEditorWindow(QtWidgets.QMainWindow):
         
     def delRecord(self):
         self.ui.tb_Audience.removeRow(self.ui.tb_Audience.currentRow())
-        self.row=self.ui.tb_Audience.currentRow()
+        self.row=self.ui.tb_Audience.currentRow()  
         self.ui.tb_Audience.setCurrentCell(self.row-1,0)
         self.records.pop(self.row)
         
@@ -198,10 +198,12 @@ class PPSEditorWindow(QtWidgets.QWidget):
         self.parent=parent
         self.setupUi(self)
 
+
     def closeEvent(self,event):
         self.TeacherSelectionWindow=TeacherSelectorWindow()
         self.TeacherSelectionWindow.show()
         self.hide()
+
 
 
 #Класс Редактирования КО
@@ -212,8 +214,22 @@ class KOEditorWindow(QtWidgets.QMainWindow):
         self.ui.setupUi(self)
         self.counter=0
 
+        self.records = []
+        self.record={}
+        self.index = 0
+
+        self.ui.pb_Save.clicked.connect(self.saveRecord)
+        self.ui.pb_Add.clicked.connect(self.addRecord)
+        self.ui.pb_Delete.clicked.connect(self.delRecord)
+        self.ui.pb_Edit.clicked.connect(self.editRecord)
+
+        self.ui.tb_KO.cellClicked.connect(self.ShowRecord)
+
         self.FIODialogUi=FIODialog()
         self.FIODialogUi.setupUi(self)
+
+        self.UslPrDialogUI=UslPrDialog()
+        self.UslPrDialogUI.setupUi(self)
 
         self.NaprPodgotovDialogUi=NaprPodgotovDialog()
         self.NaprPodgotovDialogUi.setupUi(self)
@@ -228,7 +244,99 @@ class KOEditorWindow(QtWidgets.QMainWindow):
         self.MainAppWindowShow.show()
         self.close()
 
-    
+    def addRecord(self):
+        if self.validation()==True:
+            if self.ui.chB_State.isChecked()==False and self.ui.chB_Inner.isChecked()==False and self.ui.chB_Deal.isChecked()==False:
+                self.UslPrDialogUI.show()
+                return False
+            else:
+                self.fPPS = str(self.ui.le_FIO.text())
+            if self.ui.chB_State.isChecked()==True:
+                self.state = True
+            else:
+                self.state = False
+            if self.ui.chB_Inner.isChecked()==True:
+                self.inner = True
+            else:
+                self.inner = False
+            if self.ui.chB_Deal.isChecked()==True:
+                self.deal = True
+            else:
+                self.deal = False
+
+            self.row=self.ui.tb_KO.currentRow()
+            self.dRank = str(self.ui.cb_Dolzh.currentText())
+            self.ucRank = str(self.ui.cb_Stepen.currentText())
+            self.zRank = str(self.ui.cb_zvan.currentText())
+            self.nPPS = str(self.ui.tE_NaprPodgotov.toPlainText())
+            self.ePPS = str(self.ui.tE_Education.toPlainText())
+            self.record = {'FIO': self.fPPS,'Uslovia': [self.state,self.inner,self.deal], "Dolzhnost": self.dRank, "Stepen": self.ucRank, "Zvanie": self.zRank, 'Napravlenie': self.nPPS, 'Education' : self.ePPS }
+            self.records.append(self.record)
+            if len(self.records)>1:
+                SelSortPPS(self.records)
+            self.index = len(self.records)
+            self.rowCount= (self.records.index(self.record))
+
+            self.ui.tb_KO.insertRow(self.rowCount)
+            if self.record.get("Uslovia")[0]==True:     
+                self.c1PPS = str(self.ui.chB_State.text())
+            else:
+                self.c1PPS  = str('')
+            if self.record.get("Uslovia")[1]==True:
+                self.c2PPS = str(self.ui.chB_Inner.text())
+            else:
+                self.c2PPS  = str('')
+            if self.record.get("Uslovia")[2]==True:
+                self.c3PPS = str(self.ui.chB_Deal.text())
+            else:
+                self.c3PPS  = str('')
+
+            self.qboxPPS = self.c1PPS + ' ' + self.c2PPS + ' ' + self.c3PPS
+
+            self.ui.tb_KO.setItem(self.rowCount, 0, QtWidgets.QTableWidgetItem(self.fPPS))
+            self.ui.tb_KO.setItem(self.rowCount, 1, QtWidgets.QTableWidgetItem(self.qboxPPS))
+            self.ui.tb_KO.setItem(self.rowCount, 2, QtWidgets.QTableWidgetItem(self.dRank))
+            self.ui.tb_KO.setItem(self.rowCount, 3, QtWidgets.QTableWidgetItem(self.ucRank))
+            self.ui.tb_KO.setItem(self.rowCount, 4, QtWidgets.QTableWidgetItem(self.zRank))
+            self.ui.tb_KO.setItem(self.rowCount, 6, QtWidgets.QTableWidgetItem(self.nPPS))
+            self.ui.tb_KO.setItem(self.rowCount, 7, QtWidgets.QTableWidgetItem(self.ePPS))
+
+    def delRecord(self):
+        self.ui.tb_KO.removeRow(self.ui.tb_KO.currentRow())
+        self.row=self.ui.tb_KO.currentRow()
+        self.ui.tb_KO.setCurrentCell(self.row-1,0)
+        self.records.pop(self.row)
+        
+    def editRecord(self):
+        self.ui.pb_Save.setEnabled(True)
+        self.ui.pb_Add.setEnabled(False)
+        self.ui.pb_Delete.setEnabled(False)
+        self.ui.pb_Edit.setEnabled(False)
+        self.saveRecord()
+        
+
+    def saveRecord(self):
+        self.delRecord()
+        self.addRecord()
+
+    def ShowRecord(self,row,column):
+        self.ui.le_FIO.setText(self.records[row].get("FIO"))
+        if self.records[row].get("Uslovia")[0]==True:
+            self.ui.chB_State.setChecked(True)
+        else:
+            self.ui.chB_State.setChecked(False)
+        if self.records[row].get("Uslovia")[1]==True:
+            self.ui.chB_Inner.setChecked(True)
+        else:
+            self.ui.chB_Inner.setChecked(False)
+        if self.records[row].get("Uslovia")[2]==True:
+            self.ui.chB_Deal.setChecked(True)
+        else:
+            self.ui.chB_Deal.setChecked(False)
+        self.ui.tE_NaprPodgotov.setPlainText(self.records[row].get("Napravlenie"))
+        self.ui.tE_Education.setPlainText(self.records[row].get("Education"))
+
+
     #Валидатор полей справочника аудиторий
     def validation(self):
         self.PPSValid=Validator.PPSValidator()

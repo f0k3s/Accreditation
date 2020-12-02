@@ -248,6 +248,25 @@ class FIODialog(QtWidgets.QDialog):
     def btnClosed(self):
         self.close()
 
+class UslPrDialog(QtWidgets.QDialog):
+    def setupUi(self,Dialog):
+        
+        self.verticalLayout = QtWidgets.QVBoxLayout(self)
+        self.verticalLayout.setObjectName("verticalLayout")
+        self.label=QtWidgets.QLabel(self)
+        self.label.setObjectName("label")
+        self.label.setText("Выберите одно из условий привлечения")
+        self.verticalLayout.addWidget(self.label)
+        self.pushButton = QtWidgets.QPushButton(self)
+        self.pushButton.setObjectName("pushButton")
+        self.pushButton.clicked.connect(self.btnClosed)
+        self.verticalLayout.addWidget(self.pushButton)
+        self.setWindowTitle("Ошибка!")
+        self.pushButton.setText("Понимаю")
+
+    def btnClosed(self):
+        self.close()
+
 class NaprPodgotovDialog(QtWidgets.QDialog):
     def setupUi(self,Dialog):
         

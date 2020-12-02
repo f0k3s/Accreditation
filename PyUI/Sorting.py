@@ -42,14 +42,11 @@ def SelSortPPS(array):
                             if array[b].get("Zvanie")<array[a].get("Zvanie"):
                                 a=b
                             elif array[b].get("Zvanie")==array[a].get("Zvanie"):
-                                if array[b].get("Disciplines")<array[a].get("Disciplines"):
+                                if array[b].get("Napravlenie")<array[a].get("Napravlenie"):
                                     a=b
-                                elif array[b].get("Disciplines")==array[a].get("Disciplines"):
-                                    if array[b].get("Napravlenie")<array[a].get("Napravlenie"):
+                                elif array[b].get("Napravlenie")==array[a].get("Napravlenie"):
+                                    if array[b].get("Education")<array[a].get("Education"):
                                         a=b
-                                    elif array[b].get("Napravlenie")==array[a].get("Napravlenie"):
-                                        if array[b].get("Education")<array[a].get("Education"):
-                                            a=b
             b+=1
         array[i],array[a]=array[a],array[i]
     return array
