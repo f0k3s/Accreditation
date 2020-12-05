@@ -227,13 +227,13 @@ class KOEditorWindow(QtWidgets.QMainWindow):
     def __init__(self,):
         super(KOEditorWindow, self).__init__()
         self.ui=Ui_KO_Editor()
-        self.ui.setupUi(self)
         self.counter=0
-        self.tableRecords()
         self.records = []
         self.record={}
         self.index = 0
-
+        self.ui.setupUi(self)
+        
+        self.tableRecords()
         self.ui.pb_Save.clicked.connect(self.saveRecord)
         self.ui.pb_Add.clicked.connect(self.addRecord)
         self.ui.pb_Delete.clicked.connect(self.delRecord)
@@ -293,7 +293,6 @@ class KOEditorWindow(QtWidgets.QMainWindow):
                 SelSortPPS(self.records)
             writeCSV("PPSDB.csv",self.records)
             self.tableRecords()
-        
             
 
     def tableRecords(self):
@@ -353,6 +352,7 @@ class KOEditorWindow(QtWidgets.QMainWindow):
 
     def ShowRecord(self,row,column):
         print(row)
+        print(self.records)
         self.ui.le_FIO.setText(self.records[row].get("FIO"))
         if self.records[row].get("Uslovia")[0]==True:
             self.ui.chB_State.setChecked(True)
