@@ -21,6 +21,9 @@ def AUDreadCSV(Filename):
                     datas.append(record)
     return datas
 
+
+data=[{'FIO': "self.fPPS",'Uslovia': [True,True,True], "Dolzhnost": "1", "Stepen": "1", "Zvanie": "1", 'Napravlenie': "self.nPPS", 'Education' : "self.ePPS" }]
+
 def PPSreadCSV(Filename):
     with open(Filename, "r", newline="") as file:
         datas=[]
@@ -31,9 +34,10 @@ def PPSreadCSV(Filename):
                 if row:
                     temp = re.findall(r'\d+', row[1])
                     res = list(map(int, temp))
-                    record={'FIO': row[0],'Uslovia': res, "Dolzhnost": int(row[2]), "Stepen": int(row[3]), "Zvanie": int(row[4]), 'Napravlenie': row[5], 'Education' : row[6] }
+                    record={'FIO': row[0],'Uslovia': row[1], "Dolzhnost": int(row[2]), "Stepen": int(row[3]), "Zvanie": int(row[4]), 'Napravlenie': row[5], 'Education' : row[6] }
                     datas.append(record)
     return datas
 
-PPSreadCSV('PPSDB.csv')
+writeCSV("db.csv",data)
+print(PPSreadCSV('db.csv'))
 
