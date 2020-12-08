@@ -13,10 +13,10 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 """Импорт файлов интерфейса"""
 from UI.PPSEditor import Ui_PPSReference
 from UI.MainWindow import Ui_MainWindow
-from UI.UPSelector import Ui_UPSelection
-from UI.UPEditor import Ui_UPReference
+from UI.UPDB_Editor import Ui_UPEditor
 from UI.TeacherSelector import Ui_TeacherSelection
 from UI.GNEditor import Ui_GNReference
+from UI.AudTableFiller import Ui_AudienceChooser
 from UI.AudienceDB_Edit import *
 from UI.KODB_Editor import *
 
@@ -396,35 +396,26 @@ class KOEditorWindow(QtWidgets.QMainWindow):
             self.FIODialogUi.show()
             return False
 
-        
-
-        
-
-
-#Класс выбора УП
-class UPSelectorWindow(QtWidgets.QWidget, Ui_UPSelection):
+#Класс выбора аудиторий для таблицы  
+class AudienceFillerWindow(QtWidgets.QMainWindow, Ui_AudienceChooser):
     def __init__(self,parent=None):
-        super(UPSelectorWindow, self).__init__(parent)
+        super(AudienceFillerWindow, self).__init__(parent)
         self.setupUi(self)
         self.parent=parent
 
-        self.pb_saveUP.clicked.connect(self.closeEvent)
 
     def closeEvent(self,event):
         self.MainAppWindowShow=MainAppWindow()
         self.MainAppWindowShow.show()
         self.close()
 
-
 #Класс редактирования УП
-class UPEditorWindow(QtWidgets.QWidget, Ui_UPReference):
+class UPEditorWindow(QtWidgets.QMainWindow, Ui_UPEditor):
     def __init__(self,parent=None):
         super(UPEditorWindow, self).__init__(parent)
         self.setupUi(self)
         self.parent=parent
 
-        self.pb_saveUP.clicked.connect(self.closeEvent)
-        self.pb_ExitUP.clicked.connect(self.closeEvent)
 
     def closeEvent(self,event):
         self.MainAppWindowShow=MainAppWindow()
@@ -445,13 +436,10 @@ class MainAppWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.action_Save.triggered.connect(self.saveFile)
 
         """Кнопки вызова дочерних окон"""
-        self.pb_KOChange.clicked.connect(self.openTeacherSelector)
         self.action_PPS.triggered.connect(self.openKOEditor)
-        self.pb_UPChange.clicked.connect(self.openUPSelector)
         self.action_UP.triggered.connect(self.openUPEditor)
-        self.pb_Group.clicked.connect(self.openGNEditor)
-        self.pb_MTOChange.clicked.connect(self.openAudienceEditor)
         self.action_Audience.triggered.connect(self.openAudienceEditor)
+        self.pb_SetTable.clicked.connect(self.openAudFiller)
 
     #Функция вызова файлового менеджера
     def openFile(self):
@@ -500,11 +488,6 @@ class MainAppWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.KOEditor=KOEditorWindow()
         self.KOEditor.show()
         self.hide()
-  
-    def openUPSelector(self):
-        self.UPSelectWindow=UPSelectorWindow()
-        self.UPSelectWindow.show()
-        self.hide()
 
     def openUPEditor(self):
         self.UPEditingWindow=UPEditorWindow()
@@ -520,6 +503,13 @@ class MainAppWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.AudienceEditingWindow=AudienceEditorWindow()
         self.AudienceEditingWindow.show()
         self.hide()
+
+    def openAudFiller(self):
+        self.AudienceFillingWindow=AudienceFillerWindow()
+        self.AudienceFillingWindow.show()
+        self.hide()
+
+
   
   
     
