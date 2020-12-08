@@ -26,7 +26,7 @@ from Sorting import SelSortPPS
 from SaveAndLoad import writeCSV
 from SaveAndLoad import PPSreadCSV
 from SaveAndLoad import AUDreadCSV
-from SaveAndLoad import UPDBreadCSV
+from SaveAndLoad import UPreadCSV
 
 #Импорт функций генерации документов
 import DocxGeneratingDef
@@ -439,20 +439,20 @@ class UPEditorWindow(QtWidgets.QMainWindow):
 
     def addRecord(self):
         self.NameUD = str(self.ui.le_NameUD.text())
-        self.NumberUD = str(self.ui.le_NumberUD.text()) 
-        self.IntensityUD = str(self.ui.sp_IntensityUD.text())  #Артём лох
-        self.CreditUnits = str(self.ui.sp_CreditUnits.text())
-        self.TimeUD = str(self.ui.sp_Time.text())
-        self.LectionUD = str(self.ui.sp_Lection.text())
-        self.PracticeUD = str(self.ui.sp_Practice.text())
-        self.LabWorkUD = str(self.ui.sp_LabWork.text())
+        self.NumberUD = int(self.ui.le_NumberUD.text()) 
+        self.IntensityUD = int(self.ui.sp_IntensityUD.text()) 
+        self.CreditUnits = int(self.ui.sp_CreditUnits.text())
+        self.TimeUD = int(self.ui.sp_Time.text())
+        self.LectionUD = int(self.ui.sp_Lection.text())
+        self.PracticeUD = int(self.ui.sp_Practice.text())
+        self.LabWorkUD = int(self.ui.sp_LabWork.text())
         self.record = {'NameUD': self.NameUD, 'NumberUD' : self.NumberUD, 'IntensityUD': self.IntensityUD, 'CreditUnit' : self.CreditUnits, 'TimeUD' : self.TimeUD, 'LectionUD' : self.LectionUD, 'PracticeUD' : self.PracticeUD, 'LabWorkUD' : self.LabWorkUD }
         self.records.append(self.record)
         writeCSV("UPDB.csv",self.records)
         self.tableRecords()
 
     def tableRecords(self):
-        self.records=UPDBreadCSV("UPDB.csv")
+        self.records=UPreadCSV("UPDB.csv")
         if self.records:
             self.ui.tb_UP.setRowCount(0)
             self.index = len(self.records)
@@ -461,12 +461,12 @@ class UPEditorWindow(QtWidgets.QMainWindow):
                 self.ui.tb_UP.insertRow(self.rowCount)
                 self.ui.tb_UP.setItem(self.rowCount, 0, QtWidgets.QTableWidgetItem(self.records[self.rowCount].get('NameUD')))
                 self.ui.tb_UP.setItem(self.rowCount, 1, QtWidgets.QTableWidgetItem(self.records[self.rowCount].get('NumberUD')))
-                self.ui.tb_UP.setItem(self.rowCount, 2, QtWidgets.QTableWidgetItem(self.records[self.rowCount].get('IntensityUD')))
-                self.ui.tb_UP.setItem(self.rowCount, 3, QtWidgets.QTableWidgetItem(self.records[self.rowCount].get('CreditUnit')))
-                self.ui.tb_UP.setItem(self.rowCount, 4, QtWidgets.QTableWidgetItem(self.records[self.rowCount].get('TimeUD')))
-                self.ui.tb_UP.setItem(self.rowCount, 5, QtWidgets.QTableWidgetItem(self.records[self.rowCount].get('LectionUD')))
-                self.ui.tb_UP.setItem(self.rowCount, 6, QtWidgets.QTableWidgetItem(self.records[self.rowCount].get('PracticeUD')))
-                self.ui.tb_UP.setItem(self.rowCount, 7, QtWidgets.QTableWidgetItem(self.records[self.rowCount].get('LabWorkUD')))
+                self.ui.tb_UP.setItem(self.rowCount, 2, QtWidgets.QTableWidgetItem(str(self.records[self.rowCount].get('IntensityUD'))))
+                self.ui.tb_UP.setItem(self.rowCount, 3, QtWidgets.QTableWidgetItem(str(self.records[self.rowCount].get('CreditUnit'))))
+                self.ui.tb_UP.setItem(self.rowCount, 4, QtWidgets.QTableWidgetItem(str(self.records[self.rowCount].get('TimeUD'))))
+                self.ui.tb_UP.setItem(self.rowCount, 5, QtWidgets.QTableWidgetItem(str(self.records[self.rowCount].get('LectionUD'))))
+                self.ui.tb_UP.setItem(self.rowCount, 6, QtWidgets.QTableWidgetItem(str(self.records[self.rowCount].get('PracticeUD'))))
+                self.ui.tb_UP.setItem(self.rowCount, 7, QtWidgets.QTableWidgetItem(str(self.records[self.rowCount].get('LabWorkUD'))))
 
     def delRecord(self):
         self.ui.tb_UP.removeRow(self.ui.tb_UP.currentRow())
@@ -494,11 +494,11 @@ class UPEditorWindow(QtWidgets.QMainWindow):
         self.ui.le_NameUD.setText(self.records[row].get("NameUD"))
         self.ui.le_NumberUD.setText(self.records[row].get("NumberUD"))
         self.ui.sp_IntensityUD.setValue(self.records[row].get("IntensityUD"))
-        self.ui.sp_CreditUnit.setValue(self.records[row].get("CreditUnit"))
-        self.ui.sp_TimeUD.setValue(self.records[row].get("TimeUD"))
-        self.ui.sp_LectionUD.setValue(self.records[row].get("LectionUD"))
-        self.ui.sp_PracticeUD.setValue(self.records[row].get("PracticeUD"))
-        self.ui.sp_LabWorkUD.setValue(self.records[row].get("LabWorkUD"))
+        self.ui.sp_CreditUnits.setValue(self.records[row].get("CreditUnit"))
+        self.ui.sp_Time.setValue(self.records[row].get("TimeUD"))
+        self.ui.sp_Lection.setValue(self.records[row].get("LectionUD"))
+        self.ui.sp_Practice.setValue(self.records[row].get("PracticeUD"))
+        self.ui.sp_LabWork.setValue(self.records[row].get("LabWorkUD"))
 
     
 
