@@ -6,7 +6,15 @@ import sys
 import re
 import os
 import comtypes.client
+import csv
 import time
+import docx
+import pandas as pd
+import numpy as np
+from docx.shared import Pt
+from docx.shared import Inches
+from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx.enum.table import WD_TABLE_ALIGNMENT
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
@@ -544,6 +552,7 @@ class MainAppWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         #Создание файла
         self.action_Save.triggered.connect(self.saveFile)
 
+        self.pb_SaveDoc.clicked.connect(self.createFile)
         """Кнопки вызова дочерних окон"""
         self.action_PPS.triggered.connect(self.openKOEditor)
         self.action_UP.triggered.connect(self.openUPEditor)
@@ -618,6 +627,26 @@ class MainAppWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.AudienceFillingWindow.show()
         self.hide()
 
+
+
+    def createFile(self):
+        self.doc = docx.Document('Testoooo.docx')
+        self.df = pd.DataFrame()
+        with open('AUDDB.csv', newline='') as File:
+            reader = csv.reader(File)
+            headers = next(reader)
+            cols = len(headers)
+            for self.table in self.doc.tables:
+                hdr_cells = self.table.rows[0].cells
+            for i in range(cols):
+                hdr_cells[i].text = headers[i]
+            for row in reader:
+                row_cells = self.table.add_row().cells
+                for i in range(cols):
+                    row_cells[i].text = row[i]
+
+
+        self.doc.save('Testoooo.docx')
 
   
   
