@@ -27,6 +27,7 @@ from SaveAndLoad import writeCSV
 from SaveAndLoad import PPSreadCSV
 from SaveAndLoad import AUDreadCSV
 from SaveAndLoad import UPreadCSV
+from SaveAndLoad import DiscreadCSV
 
 #Импорт функций генерации документов
 import DocxGeneratingDef
@@ -233,6 +234,8 @@ class KOEditorWindow(QtWidgets.QMainWindow):
         self.records = []
         self.record={}
         self.index = 0
+        self.disciplines=[]
+        self.disc=''
         self.ui.setupUi(self)
         
         self.tableRecords()
@@ -240,7 +243,6 @@ class KOEditorWindow(QtWidgets.QMainWindow):
         self.ui.pb_Add.clicked.connect(self.addRecord)
         self.ui.pb_Delete.clicked.connect(self.delRecord)
         self.ui.pb_Edit.clicked.connect(self.editRecord)
-
         self.ui.tb_KO.cellClicked.connect(self.ShowRecord)
         self.ui.pb_Save.setEnabled(False)
 
@@ -255,6 +257,9 @@ class KOEditorWindow(QtWidgets.QMainWindow):
 
         self.EducationDialogUi=EducationDialog()
         self.EducationDialogUi.setupUi(self)
+
+        self.ui.list_UPDisc.itemDoubleClicked.connect(self.addDiscipline)
+        self.ui.list_choosenDisc.itemDoubleClicked.connect(self.removeDiscipline)
 
     def closeEvent(self,event):
         self.MainAppWindowShow=MainAppWindow()
@@ -290,7 +295,12 @@ class KOEditorWindow(QtWidgets.QMainWindow):
             self.zRank = str(self.ui.cb_zvan.currentText())
             self.nPPS = str(self.ui.tE_NaprPodgotov.toPlainText())
             self.ePPS = str(self.ui.tE_Education.toPlainText())
-            self.record = {'FIO': self.fPPS,'Uslovia': [self.state,self.inner,self.deal], "Dolzhnost": self.Dol, "Stepen": self.Step, "Zvanie": self.Zvan, 'Napravlenie': self.nPPS, 'Education' : self.ePPS }
+            for k in range(0,self.ui.list_choosenDisc.count()):
+                if k==self.ui.list_choosenDisc.count():
+                    self.disc+=self.ui.list_choosenDisc.item(k).text()
+                else:
+                    self.disc+=self.ui.list_choosenDisc.item(k).text()+'\n'
+            self.record = {'FIO': self.fPPS,'Uslovia': [self.state,self.inner,self.deal], "Dolzhnost": self.Dol, "Stepen": self.Step, "Zvanie": self.Zvan,'Disciplines': self.disc, 'Napravlenie': self.nPPS, 'Education' : self.ePPS }
             self.records.append(self.record)
             if len(self.records)>1:
                 SelSortPPS(self.records)
@@ -298,12 +308,28 @@ class KOEditorWindow(QtWidgets.QMainWindow):
             self.tableRecords()
             
 
+    def addDiscipline(self,item):
+        self.ui.list_choosenDisc.addItem(item.text())
+        self.ui.list_UPDisc.takeItem(self.ui.list_UPDisc.currentRow())
+
+
+    def removeDiscipline(self,item):
+        self.ui.list_UPDisc.addItem(item.text())
+        self.ui.list_choosenDisc.takeItem(self.ui.list_choosenDisc.currentRow())
+        
+
+
     def tableRecords(self):
+        self.disciplines=DiscreadCSV("UPDB.csv")
+        print(self.disciplines)
+        if self.disciplines:
+            for j in range(len(self.disciplines)):
+                self.ui.list_UPDisc.addItem(self.disciplines[j])
         self.records=PPSreadCSV("PPSDB.csv")
         if self.records:
             self.ui.tb_KO.setRowCount(0)
             self.index = len(self.records)
-            print(self.index)
+
             for i in range(0, self.index):
                 self.rowCount= i
                 self.ui.tb_KO.insertRow(self.rowCount)
@@ -321,12 +347,14 @@ class KOEditorWindow(QtWidgets.QMainWindow):
                     self.c3PPS  = str('')
 
                 self.qboxPPS = self.c1PPS + ' ' + self.c2PPS + ' ' + self.c3PPS
+                
 
                 self.ui.tb_KO.setItem(self.rowCount, 0, QtWidgets.QTableWidgetItem(self.records[self.rowCount].get('FIO')))
                 self.ui.tb_KO.setItem(self.rowCount, 1, QtWidgets.QTableWidgetItem(self.qboxPPS))
                 self.ui.tb_KO.setItem(self.rowCount, 2, QtWidgets.QTableWidgetItem(self.ui.cb_Dolzh.itemText(self.records[self.rowCount].get("Dolzhnost"))))
                 self.ui.tb_KO.setItem(self.rowCount, 3, QtWidgets.QTableWidgetItem(self.ui.cb_Stepen.itemText(self.records[self.rowCount].get("Stepen"))))
                 self.ui.tb_KO.setItem(self.rowCount, 4, QtWidgets.QTableWidgetItem(self.ui.cb_zvan.itemText(self.records[self.rowCount].get("Zvanie"))))
+                self.ui.tb_KO.setItem(self.rowCount,5,QtWidgets.QTableWidgetItem(self.records[self.rowCount].get("Disciplines")))
                 self.ui.tb_KO.setItem(self.rowCount, 6, QtWidgets.QTableWidgetItem(self.records[self.rowCount].get('Napravlenie')))
                 self.ui.tb_KO.setItem(self.rowCount, 7, QtWidgets.QTableWidgetItem(self.records[self.rowCount].get('Education')))
 
@@ -354,8 +382,7 @@ class KOEditorWindow(QtWidgets.QMainWindow):
         self.ui.pb_Edit.setEnabled(True)
 
     def ShowRecord(self,row,column):
-        print(row)
-        print(self.records)
+        self.ui.list_choosenDisc.clear()
         self.ui.le_FIO.setText(self.records[row].get("FIO"))
         if self.records[row].get("Uslovia")[0]==True:
             self.ui.chB_State.setChecked(True)
@@ -369,6 +396,9 @@ class KOEditorWindow(QtWidgets.QMainWindow):
             self.ui.chB_Deal.setChecked(True)
         else:
             self.ui.chB_Deal.setChecked(False)
+        dissc=self.records[row].get("Disciplines").split('\n')
+        for i in dissc:
+            self.ui.list_choosenDisc.addItem(i)
         self.ui.cb_Dolzh.setCurrentIndex(self.records[row].get("Dolzhnost"))
         self.ui.cb_Stepen.setCurrentIndex(self.records[row].get("Stepen"))
         self.ui.cb_zvan.setCurrentIndex(self.records[row].get("Zvanie"))
