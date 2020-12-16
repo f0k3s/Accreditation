@@ -60,3 +60,21 @@ class PPSValidator:
         if re.fullmatch(RegExp,Education)!=None:
             Truth=True
         return Truth
+
+class UPValidator:
+    def __init__(self):
+        pass
+    
+    def NameValid(self, Name):
+        Truth=False
+        RegExp=r"^(([\w]+[ ]?)+)$"
+        if re.fullmatch(RegExp,Name)!=None:
+            Truth=True
+        return Truth
+
+    def NumberValid(self, Number):
+        Truth=False
+        RegExp=r"^\d{2}$"
+        if re.fullmatch(RegExp,Number)!=None:
+            Truth=True
+        return Truth

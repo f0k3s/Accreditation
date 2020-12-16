@@ -13,7 +13,7 @@ import pandas as pd
 import numpy as np
 from docx.shared import Pt
 from docx.shared import Inches
-from docx.enum.text import WD_ALIGN_PARAGRAPH
+#from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.enum.table import WD_TABLE_ALIGNMENT
 
 from PyQt5 import QtCore, QtGui, QtWidgets
@@ -21,10 +21,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 """Импорт файлов интерфейса"""
 from UI.PPSEditor import Ui_PPSReference
 from UI.MainWindow import Ui_MainWindow
-from UI.UPDB_Editor import Ui_UPEditor
-from UI.TeacherSelector import Ui_TeacherSelection
-from UI.GNEditor import Ui_GNReference
-from UI.AudTableFiller import Ui_AudienceChooser
+from UI.UPDB_Editor import *
 from UI.AudienceDB_Edit import *
 from UI.KODB_Editor import *
 
@@ -35,7 +32,14 @@ from SaveAndLoad import writeCSV
 from SaveAndLoad import PPSreadCSV
 from SaveAndLoad import AUDreadCSV
 from SaveAndLoad import UPreadCSV
-from SaveAndLoad import DiscreadCSV
+from SaveAndLoad import TeacherreadCSV
+from SaveAndLoad import readMTODisc
+from SaveAndLoad import readMTOAUD
+from SaveAndLoad import matchingMTO
+from SaveAndLoad import readKODisc
+from SaveAndLoad import readKOTeacher
+from SaveAndLoad import matchingKO
+
 
 #Импорт функций генерации документов
 import DocxGeneratingDef
@@ -45,26 +49,6 @@ import convertDocxToPDF
 import Validator
 
 """Инициализация классов интерфейса для их вызова в приложении"""
-
-#Класс выбора преподавателя и дисциплины
-class TeacherSelectorWindow(QtWidgets.QWidget, Ui_TeacherSelection):
-    def __init__(self,parent=None):
-        super(TeacherSelectorWindow, self).__init__(parent)
-        self.setupUi(self)
-        self.parent=parent
-        #Работа кнопок
-        self.pb_SaveTeacher.clicked.connect(self.closeEvent)
-        self.pb_editTeacher.clicked.connect(self.openPPSEditor)
-    #Обаботка сигнала закрытия окна (закрывается дочернее окно, открывается родительское)
-    def closeEvent(self,event):
-        self.MainAppWindowShow=MainAppWindow()
-        self.MainAppWindowShow.show()
-        self.close()
-    
-    def openPPSEditor(self):
-        self.PPSEditingWindow=PPSEditorWindow()
-        self.PPSEditingWindow.show()
-        self.hide()
 
 
 #Класс редактора аудиторий
@@ -202,36 +186,6 @@ class AudienceEditorWindow(QtWidgets.QMainWindow):
         self.ui.tE_Naimen.setPlainText(self.records[row].get("AudienceNaimenovanie"))
         self.ui.tE_PO.setPlainText(self.records[row].get("AudiencePO"))
 
-#Класс выбора группы
-class GNEditorWindow(QtWidgets.QWidget, Ui_GNReference):
-    def __init__(self,parent=None):
-        super(GNEditorWindow, self).__init__(parent)
-        self.setupUi(self)
-        self.parent=parent
-
-        self.pb_ExitGN.clicked.connect(self.closeEvent)
-        self.pb_SaveGN.clicked.connect(self.closeEvent)
-
-    def closeEvent(self,event):
-        self.MainAppWindowShow=MainAppWindow()
-        self.MainAppWindowShow.show()
-        self.close()
-
-
-#Класс редактирования ППС
-class PPSEditorWindow(QtWidgets.QWidget):
-    def __init__(self,parent=None):
-        super(PPSEditorWindow, self).__init__(parent)
-        self.parent=parent
-        self.setupUi(self)
-
-
-    def closeEvent(self,event):
-        self.TeacherSelectionWindow=TeacherSelectorWindow()
-        self.TeacherSelectionWindow.show()
-        self.hide()
-
-
 
 #Класс Редактирования КО
 class KOEditorWindow(QtWidgets.QMainWindow):
@@ -265,9 +219,6 @@ class KOEditorWindow(QtWidgets.QMainWindow):
 
         self.EducationDialogUi=EducationDialog()
         self.EducationDialogUi.setupUi(self)
-
-        self.ui.list_UPDisc.itemDoubleClicked.connect(self.addDiscipline)
-        self.ui.list_choosenDisc.itemDoubleClicked.connect(self.removeDiscipline)
 
     def closeEvent(self,event):
         self.MainAppWindowShow=MainAppWindow()
@@ -303,36 +254,15 @@ class KOEditorWindow(QtWidgets.QMainWindow):
             self.zRank = str(self.ui.cb_zvan.currentText())
             self.nPPS = str(self.ui.tE_NaprPodgotov.toPlainText())
             self.ePPS = str(self.ui.tE_Education.toPlainText())
-            for k in range(0,self.ui.list_choosenDisc.count()):
-                if k==self.ui.list_choosenDisc.count():
-                    self.disc+=self.ui.list_choosenDisc.item(k).text()
-                else:
-                    self.disc+=self.ui.list_choosenDisc.item(k).text()+'\n'
-            self.record = {'FIO': self.fPPS,'Uslovia': [self.state,self.inner,self.deal], "Dolzhnost": self.Dol, "Stepen": self.Step, "Zvanie": self.Zvan,'Disciplines': self.disc, 'Napravlenie': self.nPPS, 'Education' : self.ePPS }
+            self.record = {'FIO': self.fPPS,'Uslovia': [self.state,self.inner,self.deal], "Dolzhnost": self.Dol, "Stepen": self.Step, "Zvanie": self.Zvan, 'Napravlenie': self.nPPS, 'Education' : self.ePPS }
             self.records.append(self.record)
             if len(self.records)>1:
                 SelSortPPS(self.records)
             writeCSV("PPSDB.csv",self.records)
             self.tableRecords()
-            
-
-    def addDiscipline(self,item):
-        self.ui.list_choosenDisc.addItem(item.text())
-        self.ui.list_UPDisc.takeItem(self.ui.list_UPDisc.currentRow())
-
-
-    def removeDiscipline(self,item):
-        self.ui.list_UPDisc.addItem(item.text())
-        self.ui.list_choosenDisc.takeItem(self.ui.list_choosenDisc.currentRow())
-        
 
 
     def tableRecords(self):
-        self.disciplines=DiscreadCSV("UPDB.csv")
-        print(self.disciplines)
-        if self.disciplines:
-            for j in range(len(self.disciplines)):
-                self.ui.list_UPDisc.addItem(self.disciplines[j])
         self.records=PPSreadCSV("PPSDB.csv")
         if self.records:
             self.ui.tb_KO.setRowCount(0)
@@ -362,9 +292,8 @@ class KOEditorWindow(QtWidgets.QMainWindow):
                 self.ui.tb_KO.setItem(self.rowCount, 2, QtWidgets.QTableWidgetItem(self.ui.cb_Dolzh.itemText(self.records[self.rowCount].get("Dolzhnost"))))
                 self.ui.tb_KO.setItem(self.rowCount, 3, QtWidgets.QTableWidgetItem(self.ui.cb_Stepen.itemText(self.records[self.rowCount].get("Stepen"))))
                 self.ui.tb_KO.setItem(self.rowCount, 4, QtWidgets.QTableWidgetItem(self.ui.cb_zvan.itemText(self.records[self.rowCount].get("Zvanie"))))
-                self.ui.tb_KO.setItem(self.rowCount,5,QtWidgets.QTableWidgetItem(self.records[self.rowCount].get("Disciplines")))
-                self.ui.tb_KO.setItem(self.rowCount, 6, QtWidgets.QTableWidgetItem(self.records[self.rowCount].get('Napravlenie')))
-                self.ui.tb_KO.setItem(self.rowCount, 7, QtWidgets.QTableWidgetItem(self.records[self.rowCount].get('Education')))
+                self.ui.tb_KO.setItem(self.rowCount, 5, QtWidgets.QTableWidgetItem(self.records[self.rowCount].get('Napravlenie')))
+                self.ui.tb_KO.setItem(self.rowCount, 6, QtWidgets.QTableWidgetItem(self.records[self.rowCount].get('Education')))
 
 
     def delRecord(self):
@@ -390,7 +319,6 @@ class KOEditorWindow(QtWidgets.QMainWindow):
         self.ui.pb_Edit.setEnabled(True)
 
     def ShowRecord(self,row,column):
-        self.ui.list_choosenDisc.clear()
         self.ui.le_FIO.setText(self.records[row].get("FIO"))
         if self.records[row].get("Uslovia")[0]==True:
             self.ui.chB_State.setChecked(True)
@@ -404,9 +332,6 @@ class KOEditorWindow(QtWidgets.QMainWindow):
             self.ui.chB_Deal.setChecked(True)
         else:
             self.ui.chB_Deal.setChecked(False)
-        dissc=self.records[row].get("Disciplines").split('\n')
-        for i in dissc:
-            self.ui.list_choosenDisc.addItem(i)
         self.ui.cb_Dolzh.setCurrentIndex(self.records[row].get("Dolzhnost"))
         self.ui.cb_Stepen.setCurrentIndex(self.records[row].get("Stepen"))
         self.ui.cb_zvan.setCurrentIndex(self.records[row].get("Zvanie"))
@@ -437,37 +362,54 @@ class KOEditorWindow(QtWidgets.QMainWindow):
             self.FIODialogUi.show()
             return False
 
-#Класс выбора аудиторий для таблицы  
-class AudienceFillerWindow(QtWidgets.QMainWindow, Ui_AudienceChooser):
-    def __init__(self,parent=None):
-        super(AudienceFillerWindow, self).__init__(parent)
-        self.setupUi(self)
-        self.parent=parent
-
-
-    def closeEvent(self,event):
-        self.MainAppWindowShow=MainAppWindow()
-        self.MainAppWindowShow.show()
-        self.close()
-
-
 #Класс редактирования УП
 class UPEditorWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super(UPEditorWindow, self).__init__()
         self.ui=Ui_UPEditor()
+        self.Audience=''
+        self.Teacher=''
         self.ui.setupUi(self)
-        
-        
         
         self.tableRecords()
         self.ui.pb_Save.clicked.connect(self.saveRecord)
         self.ui.pb_Add.clicked.connect(self.addRecord)
         self.ui.pb_Delete.clicked.connect(self.delRecord)
         self.ui.pb_Edit.clicked.connect(self.editRecord)
-
+        self.ui.lt_AvailTeachers.itemDoubleClicked.connect(self.addTeacher)
+        self.ui.lt_ChosenTeacher.itemDoubleClicked.connect(self.removeTeacher)
+        self.ui.lt_AvailAudience.itemDoubleClicked.connect(self.addAud)
+        self.ui.lt_ChosenAudience.itemDoubleClicked.connect(self.removeAud)
         self.ui.tb_UP.cellClicked.connect(self.ShowRecord)
         self.ui.pb_Save.setEnabled(False)
+
+        self.NameUDDialogUi=NameUDDialog()
+        self.NameUDDialogUi.setupUi(self)
+
+        self.NumberUDDialogUi=NumberUDDialog()
+        self.NumberUDDialogUi.setupUi(self)
+
+        self.TeacherDialogUi=TeacherDialog()
+        self.TeacherDialogUi.setupUi(self)
+
+        self.AudDialogUi=AudDialog()
+        self.AudDialogUi.setupUi(self)
+
+    def addTeacher(self,item):
+        if self.ui.lt_ChosenTeacher.count()<1:
+            self.ui.lt_ChosenTeacher.addItem(item.text())
+
+
+    def removeTeacher(self,item):
+        self.ui.lt_ChosenTeacher.takeItem(self.ui.lt_ChosenTeacher.currentRow())
+
+
+    def addAud(self,item):
+        if self.ui.lt_ChosenAudience.count()<1:
+            self.ui.lt_ChosenAudience.addItem(item.text())
+
+    def removeAud(self,item):
+        self.ui.lt_ChosenAudience.takeItem(self.ui.lt_ChosenAudience.currentRow())
 
     def closeEvent(self,event):
         self.MainAppWindowShow=MainAppWindow()
@@ -476,20 +418,32 @@ class UPEditorWindow(QtWidgets.QMainWindow):
 
 
     def addRecord(self):
-        self.NameUD = str(self.ui.le_NameUD.text())
-        self.NumberUD = int(self.ui.le_NumberUD.text()) 
-        self.IntensityUD = int(self.ui.sp_IntensityUD.text()) 
-        self.CreditUnits = int(self.ui.sp_CreditUnits.text())
-        self.TimeUD = int(self.ui.sp_Time.text())
-        self.LectionUD = int(self.ui.sp_Lection.text())
-        self.PracticeUD = int(self.ui.sp_Practice.text())
-        self.LabWorkUD = int(self.ui.sp_LabWork.text())
-        self.record = {'NameUD': self.NameUD, 'NumberUD' : self.NumberUD, 'IntensityUD': self.IntensityUD, 'CreditUnit' : self.CreditUnits, 'TimeUD' : self.TimeUD, 'LectionUD' : self.LectionUD, 'PracticeUD' : self.PracticeUD, 'LabWorkUD' : self.LabWorkUD }
-        self.records.append(self.record)
-        writeCSV("UPDB.csv",self.records)
-        self.tableRecords()
+        if self.validation()==True:
+            print(self.ui.lt_ChosenAudience.count())
+            self.NameUD = str(self.ui.le_NameUD.text())
+            self.NumberUD = str(self.ui.le_NumberUD.text()) 
+            self.Audience+=self.ui.lt_ChosenAudience.item(0).text()
+            self.Teacher+=self.ui.lt_ChosenTeacher.item(0).text()
+            self.IntensityUD = int(self.ui.sp_IntensityUD.text()) 
+            self.CreditUnits = int(self.ui.sp_CreditUnits.text())
+            self.TimeUD = int(self.ui.sp_Time.text())
+            self.LectionUD = int(self.ui.sp_Lection.text())
+            self.PracticeUD = int(self.ui.sp_Practice.text())
+            self.LabWorkUD = int(self.ui.sp_LabWork.text())
+            self.record = {'NameUD': self.NameUD, 'NumberUD' : self.NumberUD, 'FIO': self.Teacher, "Audience":self.Audience, 'IntensityUD': self.IntensityUD, 'CreditUnit' : self.CreditUnits, 'TimeUD' : self.TimeUD, 'LectionUD' : self.LectionUD, 'PracticeUD' : self.PracticeUD, 'LabWorkUD' : self.LabWorkUD }
+            self.records.append(self.record)
+            writeCSV("UPDB.csv",self.records)
+            self.tableRecords()
 
     def tableRecords(self):
+        self.Teachers=TeacherreadCSV("PPSDB.csv")
+        if self.Teachers:
+            for j in range(len(self.Teachers)):
+                self.ui.lt_AvailTeachers.addItem(self.Teachers[j])
+        self.Audinces=TeacherreadCSV("AUDDB.csv")
+        if self.Audinces:
+            for j in range(len(self.Audinces)):
+                self.ui.lt_AvailAudience.addItem(self.Audinces[j])
         self.records=UPreadCSV("UPDB.csv")
         if self.records:
             self.ui.tb_UP.setRowCount(0)
@@ -497,14 +451,17 @@ class UPEditorWindow(QtWidgets.QMainWindow):
             for i in range(0, self.index):
                 self.rowCount= i
                 self.ui.tb_UP.insertRow(self.rowCount)
-                self.ui.tb_UP.setItem(self.rowCount, 0, QtWidgets.QTableWidgetItem(self.records[self.rowCount].get('NameUD')))
-                self.ui.tb_UP.setItem(self.rowCount, 1, QtWidgets.QTableWidgetItem(self.records[self.rowCount].get('NumberUD')))
-                self.ui.tb_UP.setItem(self.rowCount, 2, QtWidgets.QTableWidgetItem(str(self.records[self.rowCount].get('IntensityUD'))))
-                self.ui.tb_UP.setItem(self.rowCount, 3, QtWidgets.QTableWidgetItem(str(self.records[self.rowCount].get('CreditUnit'))))
-                self.ui.tb_UP.setItem(self.rowCount, 4, QtWidgets.QTableWidgetItem(str(self.records[self.rowCount].get('TimeUD'))))
-                self.ui.tb_UP.setItem(self.rowCount, 5, QtWidgets.QTableWidgetItem(str(self.records[self.rowCount].get('LectionUD'))))
-                self.ui.tb_UP.setItem(self.rowCount, 6, QtWidgets.QTableWidgetItem(str(self.records[self.rowCount].get('PracticeUD'))))
-                self.ui.tb_UP.setItem(self.rowCount, 7, QtWidgets.QTableWidgetItem(str(self.records[self.rowCount].get('LabWorkUD'))))
+                self.ui.tb_UP.setItem(self.rowCount, 0, QtWidgets.QTableWidgetItem(str(self.rowCount+1)))
+                self.ui.tb_UP.setItem(self.rowCount, 1, QtWidgets.QTableWidgetItem(self.records[self.rowCount].get('NameUD')))
+                self.ui.tb_UP.setItem(self.rowCount, 2, QtWidgets.QTableWidgetItem(self.records[self.rowCount].get('NumberUD')))
+                self.ui.tb_UP.setItem(self.rowCount, 3, QtWidgets.QTableWidgetItem(self.records[self.rowCount].get('FIO')))
+                self.ui.tb_UP.setItem(self.rowCount, 4, QtWidgets.QTableWidgetItem(self.records[self.rowCount].get('Audience')))
+                self.ui.tb_UP.setItem(self.rowCount, 5, QtWidgets.QTableWidgetItem(str(self.records[self.rowCount].get('IntensityUD'))))
+                self.ui.tb_UP.setItem(self.rowCount, 6, QtWidgets.QTableWidgetItem(str(self.records[self.rowCount].get('CreditUnit'))))
+                self.ui.tb_UP.setItem(self.rowCount, 7, QtWidgets.QTableWidgetItem(str(self.records[self.rowCount].get('TimeUD'))))
+                self.ui.tb_UP.setItem(self.rowCount, 8, QtWidgets.QTableWidgetItem(str(self.records[self.rowCount].get('LectionUD'))))
+                self.ui.tb_UP.setItem(self.rowCount, 9, QtWidgets.QTableWidgetItem(str(self.records[self.rowCount].get('PracticeUD'))))
+                self.ui.tb_UP.setItem(self.rowCount, 10, QtWidgets.QTableWidgetItem(str(self.records[self.rowCount].get('LabWorkUD'))))
 
     def delRecord(self):
         self.ui.tb_UP.removeRow(self.ui.tb_UP.currentRow())
@@ -529,8 +486,12 @@ class UPEditorWindow(QtWidgets.QMainWindow):
         self.ui.pb_Edit.setEnabled(True)
 
     def ShowRecord(self,row,column):
+        self.ui.lt_ChosenAudience.clear()
+        self.ui.lt_ChosenTeacher.clear()
         self.ui.le_NameUD.setText(self.records[row].get("NameUD"))
         self.ui.le_NumberUD.setText(self.records[row].get("NumberUD"))
+        self.ui.lt_ChosenTeacher.addItem(self.records[row].get("FIO"))
+        self.ui.lt_ChosenAudience.addItem(self.records[row].get("Audience"))
         self.ui.sp_IntensityUD.setValue(self.records[row].get("IntensityUD"))
         self.ui.sp_CreditUnits.setValue(self.records[row].get("CreditUnit"))
         self.ui.sp_Time.setValue(self.records[row].get("TimeUD"))
@@ -538,26 +499,77 @@ class UPEditorWindow(QtWidgets.QMainWindow):
         self.ui.sp_Practice.setValue(self.records[row].get("PracticeUD"))
         self.ui.sp_LabWork.setValue(self.records[row].get("LabWorkUD"))
 
-    
+    def validation(self):
+        self.UPValid=Validator.UPValidator()
+
+        self.Name=self.ui.le_NameUD.text()
+        self.Number=self.ui.le_NumberUD.text()
+
+        if (self.UPValid.NameValid(self.Name))==True:
+            if (self.UPValid.NumberValid(self.Number))==True:
+                if self.ui.lt_ChosenTeacher.count()!=0:
+                    if self.ui.lt_ChosenAudience.count()!=0:
+                        return True
+                    else:
+                        self.AudDialogUi.show()
+                        return False
+                else:
+                    self.TeacherDialogUi.show()
+                    return False
+            else:
+                self.NumberUDDialogUi.show()
+                return False
+        else:
+            self.NameUDDialogUi.show()
+            return False
 
 #Класс главного окна
-class MainAppWindow(QtWidgets.QMainWindow, Ui_MainWindow):
+class MainAppWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super(MainAppWindow, self).__init__()
-        self.setupUi(self)
+        self.ui=Ui_MainWindow()
+        self.Document=-1
+        self.DocRecords=[]
+        self.ui.setupUi(self)
         self.setWindowTitle("Приложение для генерации справок")
+        self.ui.tb_AvailAud.setVisible(False)
+        self.ui.tb_ChosenAdu.setVisible(False)
+        self.ui.tb_AvailTeacher.setVisible(False)
+        self.ui.tb_ChosenTeacher.setVisible(False)
+
+        self.ui.pushButton.clicked.connect(self.save)
+        self.ui.action_TemplateMTO.triggered.connect(self.MTOChosen)
+        self.ui.action_TemplateKO.triggered.connect(self.KOChosen)
 
         #Вызов файлового менеджера
-        self.action_Open.triggered.connect(self.openFile)
+        self.ui.action_Open.triggered.connect(self.openFile)
         #Создание файла
-        self.action_Save.triggered.connect(self.saveFile)
+        self.ui.action_Save.triggered.connect(self.saveFile)
 
-        self.pb_SaveDoc.clicked.connect(self.createFile)
         """Кнопки вызова дочерних окон"""
-        self.action_PPS.triggered.connect(self.openKOEditor)
-        self.action_UP.triggered.connect(self.openUPEditor)
-        self.action_Audience.triggered.connect(self.openAudienceEditor)
-        self.pb_SetTable.clicked.connect(self.openAudFiller)
+        self.ui.action_PPS.triggered.connect(self.openKOEditor)
+        self.ui.action_GN.triggered.connect(self.openUPEditor)
+        self.ui.action_Audience.triggered.connect(self.openAudienceEditor)
+
+    def save(self):
+        if self.Document==1:
+            self.DocRecords=matchingMTO(readMTODisc("UPDB.csv"),readMTOAUD("AUDDB.csv"))
+
+            """Функция для записи МТО"""
+            
+        elif self.Document==2:
+            self.DocRecords=matchingKO(readKODisc("UPDB.csv"),readKOTeacher("PPSDB.csv"))
+
+            """Функция для записи КО"""
+
+
+
+    def MTOChosen(self):
+        self.Document=1
+
+    def KOChosen(self):
+        self.Document=2
+
 
     #Функция вызова файлового менеджера
     def openFile(self):
@@ -597,10 +609,6 @@ class MainAppWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         DocxGeneratingDef.allInOne(cleanDirectory)
 
     """Функции вызова дочерних окон"""
-    def openTeacherSelector(self):
-        self.TeacherSelectionWindow=TeacherSelectorWindow()
-        self.TeacherSelectionWindow.show()
-        self.hide()
 
     def openKOEditor(self):
         self.KOEditor=KOEditorWindow()
@@ -612,25 +620,15 @@ class MainAppWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.UPEditingWindow.show()
         self.hide()
 
-    def openGNEditor(self):
-        self.GNEditingWindow=GNEditorWindow()
-        self.GNEditingWindow.show()
-        self.hide()
-
     def openAudienceEditor(self):
         self.AudienceEditingWindow=AudienceEditorWindow()
         self.AudienceEditingWindow.show()
         self.hide()
 
-    def openAudFiller(self):
-        self.AudienceFillingWindow=AudienceFillerWindow()
-        self.AudienceFillingWindow.show()
-        self.hide()
-
 
 
     def createFile(self):
-        self.doc = docx.Document('Testoooo.docx')
+        self.doc = docx.Document('Testooo.docx')
         self.df = pd.DataFrame()
         with open('AUDDB.csv', newline='') as File:
             reader = csv.reader(File)
@@ -646,7 +644,7 @@ class MainAppWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                     row_cells[i].text = row[i]
 
 
-        self.doc.save('Testoooo.docx')
+        self.doc.save('Testooo.docx')
 
   
   
