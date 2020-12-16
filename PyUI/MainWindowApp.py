@@ -432,7 +432,7 @@ class UPEditorWindow(QtWidgets.QMainWindow):
             self.LabWorkUD = int(self.ui.sp_LabWork.text())
             self.record = {'NameUD': self.NameUD, 'NumberUD' : self.NumberUD, 'FIO': self.Teacher, "Audience":self.Audience, 'IntensityUD': self.IntensityUD, 'CreditUnit' : self.CreditUnits, 'TimeUD' : self.TimeUD, 'LectionUD' : self.LectionUD, 'PracticeUD' : self.PracticeUD, 'LabWorkUD' : self.LabWorkUD }
             self.records.append(self.record)
-            writeCSV("UPDB.csv",self.records)
+            writeCSV("UPDB.csv",self.tableRecords)
             self.tableRecords()
 
     def tableRecords(self):
@@ -554,13 +554,68 @@ class MainAppWindow(QtWidgets.QMainWindow):
     def save(self):
         if self.Document==1:
             self.DocRecords=matchingMTO(readMTODisc("UPDB.csv"),readMTOAUD("AUDDB.csv"))
+            self.doc = docx.Document('Testooo.docx')
+            self.table = self.doc.add_table(rows=1,cols=5, style='Table Grid')
+            hdr_cells = self.table.rows[0].cells
+            hdr_cells[0].text = '№'
+            hdr_cells[1].text = 'Наименование дисциплины (модуля) практик в соответствии с учебным планом'
+            hdr_cells[2].text = 'Наименование специальных помещений и помещений для самостоятельной работы'
+            hdr_cells[3].text = 'Оснащенность специальных помещений и помещений для самостоятельной работы'
+            hdr_cells[4].text = 'Перечень лицензионного программного обеспечения. Реквизиты подтверждающего документа'
+            for i in self.DocRecords:
+                row_cells = self.table.add_row().cells
+                row_cells[1].text = i.get('Discipline')
+                row_cells[2].text = i.get('AudiencePO')
+                row_cells[3].text = i.get('AudienceTO')
+                row_cells[4].text = i.get('AudienceNaimenovanie')
+            self.filename=QtWidgets.QFileDialog.getSaveFileName(self, "Выберите файл", os.getcwd(), ".DOCX Файлы (*.docx)")
+            directory=str(self.filename)
+            cleanDirectory=""
+            counter=0
+            for i  in range(2,len(directory)):
+                if directory[i]=="\'":
+                    counter+=1
+                if counter<1:
+                    cleanDirectory=cleanDirectory+directory[i]
+            self.doc.save(cleanDirectory)
 
-            """Функция для записи МТО"""
+
+            
+
+
+
             
         elif self.Document==2:
             self.DocRecords=matchingKO(readKODisc("UPDB.csv"),readKOTeacher("PPSDB.csv"))
+            self.doc = docx.Document('Testoko.docx')
+            self.table = self.doc.add_table(rows=1,cols=7, style='Table Grid')
+            hdr_cells = self.table.rows[0].cells
+            hdr_cells[0].text = '№'
+            hdr_cells[1].text = 'Ф.И.О. преподавателя, реализующего программу '
+            hdr_cells[2].text = 'Условия привлечения (основное место работы: штатный, внутренний совместитель, внешний совместитель по договору ГПХ)'
+            hdr_cells[3].text = 'Должность, ученая степень, ученое звание'
+            hdr_cells[4].text = 'Перечень читаемых дисциплин '
+            hdr_cells[5].text = 'Уровень образования,наименование специальности,направления подготовки,наименование присвоенной квалификации'
+            hdr_cells[6].text = 'Сведения о дополнительном профессиональном образовании '
+            for i in self.DocRecords:
+                row_cells = self.table.add_row().cells
+                row_cells[1].text = i.get('FIO')
+                row_cells[2].text = str(i.get('Uslovia'))
+                row_cells[3].text = str(i.get('Dolzhnost'))+str(i.get('Stepen'))+str(i.get('Zvanie'))
+                row_cells[4].text = i.get('Discipline')
+                row_cells[5].text = i.get('Napravlenie')
+                row_cells[6].text = str(i.get('Education'))
 
-            """Функция для записи КО"""
+            self.filename=QtWidgets.QFileDialog.getSaveFileName(self, "Выберите файл", os.getcwd(), ".DOCX Файлы (*.docx)")
+            directory=str(self.filename)
+            cleanDirectory=""
+            counter=0
+            for i  in range(2,len(directory)):
+                if directory[i]=="\'":
+                    counter+=1
+                if counter<1:
+                    cleanDirectory=cleanDirectory+directory[i]
+            self.doc.save(cleanDirectory)
 
 
 
@@ -627,24 +682,21 @@ class MainAppWindow(QtWidgets.QMainWindow):
 
 
 
-    def createFile(self):
-        self.doc = docx.Document('Testooo.docx')
-        self.df = pd.DataFrame()
-        with open('AUDDB.csv', newline='') as File:
-            reader = csv.reader(File)
-            headers = next(reader)
-            cols = len(headers)
-            for self.table in self.doc.tables:
-                hdr_cells = self.table.rows[0].cells
-            for i in range(cols):
-                hdr_cells[i].text = headers[i]
-            for row in reader:
-                row_cells = self.table.add_row().cells
-                for i in range(cols):
-                    row_cells[i].text = row[i]
-
-
-        self.doc.save('Testooo.docx')
+           # self.doc = docx.Document('Testooo.docx')
+            #self.df = pd.DataFrame()
+            #with open('AUDDB.csv', newline='') as File:
+             #   reader = csv.reader(File)
+              #  headers = next(reader)
+               # cols = len(headers)
+                #for self.table in self.doc.tables:
+                #    hdr_cells = self.table.rows[0].cells
+                #for i in range(cols):
+                #    hdr_cells[i].text = headers[i]
+                #for row in reader:
+                #    row_cells = self.table.add_row().cells
+                #    for i in range(cols):
+                 #       row_cells[i].text = row[i]
+                #self.doc.save('Testooo.docx')
 
   
   
