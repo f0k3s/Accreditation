@@ -555,29 +555,30 @@ class MainAppWindow(QtWidgets.QMainWindow):
         if self.Document==1:
             self.DocRecords=matchingMTO(readMTODisc("UPDB.csv"),readMTOAUD("AUDDB.csv"))
             self.doc = docx.Document('Testooo.docx')
-            self.table = self.doc.add_table(rows=1,cols=5, style='Table Grid')
-            hdr_cells = self.table.rows[0].cells
-            hdr_cells[0].text = '№'
-            hdr_cells[1].text = 'Наименование дисциплины (модуля) практик в соответствии с учебным планом'
-            hdr_cells[2].text = 'Наименование специальных помещений и помещений для самостоятельной работы'
-            hdr_cells[3].text = 'Оснащенность специальных помещений и помещений для самостоятельной работы'
-            hdr_cells[4].text = 'Перечень лицензионного программного обеспечения. Реквизиты подтверждающего документа'
-            for i in self.DocRecords:
-                row_cells = self.table.add_row().cells
-                row_cells[1].text = i.get('Discipline')
-                row_cells[2].text = i.get('AudiencePO')
-                row_cells[3].text = i.get('AudienceTO')
-                row_cells[4].text = i.get('AudienceNaimenovanie')
-            self.filename=QtWidgets.QFileDialog.getSaveFileName(self, "Выберите файл", os.getcwd(), ".DOCX Файлы (*.docx)")
-            directory=str(self.filename)
-            cleanDirectory=""
-            counter=0
-            for i  in range(2,len(directory)):
-                if directory[i]=="\'":
-                    counter+=1
-                if counter<1:
-                    cleanDirectory=cleanDirectory+directory[i]
-            self.doc.save(cleanDirectory)
+            #self.table = self.doc.add_table(rows=1,cols=5, style='Table Grid')
+            for self.table in self.doc.tables:
+                hdr_cells = self.table.rows[0].cells
+                hdr_cells[0].text = '№'
+                hdr_cells[1].text = 'Наименование дисциплины (модуля) практик в соответствии с учебным планом'
+                hdr_cells[2].text = 'Наименование специальных помещений и помещений для самостоятельной работы'
+                hdr_cells[3].text = 'Оснащенность специальных помещений и помещений для самостоятельной работы'
+                hdr_cells[4].text = 'Перечень лицензионного программного обеспечения. Реквизиты подтверждающего документа'
+                for i in self.DocRecords:
+                    row_cells = self.table.add_row().cells
+                    row_cells[1].text = i.get('Discipline')
+                    row_cells[2].text = i.get('AudiencePO')
+                    row_cells[3].text = i.get('AudienceTO')
+                    row_cells[4].text = i.get('AudienceNaimenovanie')
+                self.filename=QtWidgets.QFileDialog.getSaveFileName(self, "Выберите файл", os.getcwd(), ".DOCX Файлы (*.docx)")
+                directory=str(self.filename)
+                cleanDirectory=""
+                counter=0
+                for i  in range(2,len(directory)):
+                    if directory[i]=="\'":
+                        counter+=1
+                    if counter<1:
+                        cleanDirectory=cleanDirectory+directory[i]
+                self.doc.save(cleanDirectory)
 
 
             
@@ -587,35 +588,51 @@ class MainAppWindow(QtWidgets.QMainWindow):
             
         elif self.Document==2:
             self.DocRecords=matchingKO(readKODisc("UPDB.csv"),readKOTeacher("PPSDB.csv"))
+            print(self.DocRecords)
             self.doc = docx.Document('Testoko.docx')
-            self.table = self.doc.add_table(rows=1,cols=7, style='Table Grid')
-            hdr_cells = self.table.rows[0].cells
-            hdr_cells[0].text = '№'
-            hdr_cells[1].text = 'Ф.И.О. преподавателя, реализующего программу '
-            hdr_cells[2].text = 'Условия привлечения (основное место работы: штатный, внутренний совместитель, внешний совместитель по договору ГПХ)'
-            hdr_cells[3].text = 'Должность, ученая степень, ученое звание'
-            hdr_cells[4].text = 'Перечень читаемых дисциплин '
-            hdr_cells[5].text = 'Уровень образования,наименование специальности,направления подготовки,наименование присвоенной квалификации'
-            hdr_cells[6].text = 'Сведения о дополнительном профессиональном образовании '
-            for i in self.DocRecords:
-                row_cells = self.table.add_row().cells
-                row_cells[1].text = i.get('FIO')
-                row_cells[2].text = str(i.get('Uslovia'))
-                row_cells[3].text = str(i.get('Dolzhnost'))+str(i.get('Stepen'))+str(i.get('Zvanie'))
-                row_cells[4].text = i.get('Discipline')
-                row_cells[5].text = i.get('Napravlenie')
-                row_cells[6].text = str(i.get('Education'))
+            for x in self.DocRecords:
+                if x.get("Uslovia")[0]==1:     
+                    self.c1PPS = 'Штатный'
+                else:
+                    self.c1PPS  = str('')
+                if x.get("Uslovia")[1]==1:
+                    self.c2PPS = 'Внутренний совместитель'
+                else:
+                    self.c2PPS  = str('')
+                if x.get("Uslovia")[2]==1:
+                    self.c3PPS = 'По договору ГСХ'
+                else:
+                        self.c3PPS  = str('')
 
-            self.filename=QtWidgets.QFileDialog.getSaveFileName(self, "Выберите файл", os.getcwd(), ".DOCX Файлы (*.docx)")
-            directory=str(self.filename)
-            cleanDirectory=""
-            counter=0
-            for i  in range(2,len(directory)):
-                if directory[i]=="\'":
-                    counter+=1
-                if counter<1:
-                    cleanDirectory=cleanDirectory+directory[i]
-            self.doc.save(cleanDirectory)
+                self.qboxPPS = self.c1PPS + ' ' + self.c2PPS + ' ' + self.c3PPS
+            for self.table in self.doc.tables:
+                hdr_cells = self.table.rows[0].cells
+                hdr_cells[0].text = '№'
+                hdr_cells[1].text = 'Ф.И.О. преподавателя, реализующего программу '
+                hdr_cells[2].text = 'Условия привлечения (основное место работы: штатный, внутренний совместитель, внешний совместитель по договору ГПХ)'
+                hdr_cells[3].text = 'Должность, ученая степень, ученое звание'
+                hdr_cells[4].text = 'Перечень читаемых дисциплин '
+                hdr_cells[5].text = 'Уровень образования,наименование специальности,направления подготовки,наименование присвоенной квалификации'
+                hdr_cells[6].text = 'Сведения о дополнительном профессиональном образовании '
+                for i in self.DocRecords:
+                    row_cells = self.table.add_row().cells
+                    row_cells[1].text = i.get('FIO')
+                    row_cells[2].text = self.qboxPPS
+                    row_cells[3].text = str(i.get('Dolzhnost'))+str(i.get('Stepen'))+str(i.get('Zvanie'))
+                    row_cells[4].text = i.get('Discipline')
+                    row_cells[5].text = i.get('Napravlenie')
+                    row_cells[6].text = str(i.get('Education'))
+
+                self.filename=QtWidgets.QFileDialog.getSaveFileName(self, "Выберите файл", os.getcwd(), ".DOCX Файлы (*.docx)")
+                directory=str(self.filename)
+                cleanDirectory=""
+                counter=0
+                for i  in range(2,len(directory)):
+                    if directory[i]=="\'":
+                        counter+=1
+                    if counter<1:
+                        cleanDirectory=cleanDirectory+directory[i]
+                self.doc.save(cleanDirectory)
 
 
 
