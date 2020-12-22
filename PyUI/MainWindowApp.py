@@ -285,7 +285,7 @@ class KOEditorWindow(QtWidgets.QMainWindow):
                     self.c3PPS  = str('')
 
                 self.qboxPPS = self.c1PPS + ' ' + self.c2PPS + ' ' + self.c3PPS
-                
+
 
                 self.ui.tb_KO.setItem(self.rowCount, 0, QtWidgets.QTableWidgetItem(self.records[self.rowCount].get('FIO')))
                 self.ui.tb_KO.setItem(self.rowCount, 1, QtWidgets.QTableWidgetItem(self.qboxPPS))
@@ -432,7 +432,7 @@ class UPEditorWindow(QtWidgets.QMainWindow):
             self.LabWorkUD = int(self.ui.sp_LabWork.text())
             self.record = {'NameUD': self.NameUD, 'NumberUD' : self.NumberUD, 'FIO': self.Teacher, "Audience":self.Audience, 'IntensityUD': self.IntensityUD, 'CreditUnit' : self.CreditUnits, 'TimeUD' : self.TimeUD, 'LectionUD' : self.LectionUD, 'PracticeUD' : self.PracticeUD, 'LabWorkUD' : self.LabWorkUD }
             self.records.append(self.record)
-            writeCSV("UPDB.csv",self.tableRecords)
+            writeCSV("UPDB.csv",self.records)
             self.tableRecords()
 
     def tableRecords(self):
@@ -569,6 +569,21 @@ class MainAppWindow(QtWidgets.QMainWindow):
                     row_cells[2].text = i.get('AudiencePO')
                     row_cells[3].text = i.get('AudienceTO')
                     row_cells[4].text = i.get('AudienceNaimenovanie')
+            for self.table in self.doc.tables:
+                for row in self.table.rows:
+                    row_count = len(self.table.rows)
+                    print(row_count)
+                    for cell in row.cells:
+                        for paragraph in cell.paragraphs:
+                            for self.op in range(row_count-1):
+                                firstC = self.table.cell(self.op, 1).text
+                                self.op=self.op+1
+                                secondC = self.table.cell(self.op, 1).text
+                            if firstC == secondC:
+                                thirdC = self.table.cell(self.op, 1).text
+                                self.table.cell(self.op, 1).text = ""
+                                self.table.cell(self.op, 1).merge(self.table.cell(self.op-1, 1))
+                                self.table.cell(self.op, 1).text = thirdC
                 self.filename=QtWidgets.QFileDialog.getSaveFileName(self, "Выберите файл", os.getcwd(), ".DOCX Файлы (*.docx)")
                 directory=str(self.filename)
                 cleanDirectory=""
@@ -602,9 +617,35 @@ class MainAppWindow(QtWidgets.QMainWindow):
                 if x.get("Uslovia")[2]==1:
                     self.c3PPS = 'По договору ГСХ'
                 else:
-                        self.c3PPS  = str('')
-
+                    self.c3PPS  = str('')
                 self.qboxPPS = self.c1PPS + ' ' + self.c2PPS + ' ' + self.c3PPS
+
+            for y in self.DocRecords:
+                if y.get("Dolzhnost")==0:
+                    self.PPSd = 'Преподаватель'
+                elif y.get("Dolzlhnost")==1:
+                    self.PPSd = 'Старший Преподаватель'
+                elif y.get("Dolzhnost")==2:
+                    self.PPSd = 'Доцент'
+                elif y.get("Dolzhnost")==3:
+                    self.PPSd = 'Профессор'
+                elif y.get("Dolzhnost")==4:
+                    self.PPSd = 'Зав. кафедрой'
+                if y.get("Stepen")==0:
+                    self.PPSs = ' '
+                elif y.get("Stepen")==1:
+                    self.PPSs = 'Кандидат наук'
+                if y.get("Stepen")==2:
+                    self.PPSs = 'Доктор наук'
+                if y.get("Zvanie")==0:
+                    self.PPSz = ' '
+                elif y.get("Zvanie")==1:
+                    self.PPSz = 'Доцент'
+                elif y.get("Zvanie")==2:
+                    self.PPSz = 'Профессор'
+                self.qboxPPS2 = self.PPSd + ' ' + self.PPSs + ' ' + self.PPSz
+
+
             for self.table in self.doc.tables:
                 hdr_cells = self.table.rows[0].cells
                 hdr_cells[0].text = '№'
@@ -618,7 +659,7 @@ class MainAppWindow(QtWidgets.QMainWindow):
                     row_cells = self.table.add_row().cells
                     row_cells[1].text = i.get('FIO')
                     row_cells[2].text = self.qboxPPS
-                    row_cells[3].text = str(i.get('Dolzhnost'))+str(i.get('Stepen'))+str(i.get('Zvanie'))
+                    row_cells[3].text = self.qboxPPS2
                     row_cells[4].text = i.get('Discipline')
                     row_cells[5].text = i.get('Napravlenie')
                     row_cells[6].text = str(i.get('Education'))
