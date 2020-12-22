@@ -15,7 +15,7 @@ from docx.shared import Pt
 from docx.shared import Inches
 #from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.enum.table import WD_TABLE_ALIGNMENT
-
+from SaveAndLoad import findDiscForTeacher
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 """Импорт файлов интерфейса"""
@@ -33,8 +33,8 @@ from SaveAndLoad import PPSreadCSV
 from SaveAndLoad import AUDreadCSV
 from SaveAndLoad import UPreadCSV
 from SaveAndLoad import TeacherreadCSV
-from SaveAndLoad import MTORead """!!!"""
-from SaveAndLoad import KORead  """!!!"""
+from SaveAndLoad import MTORead
+from SaveAndLoad import KORead
 
 
 
@@ -725,7 +725,8 @@ class MainAppWindow(QtWidgets.QMainWindow):
 
     def save(self):
         if self.Document==1:
-            self.DocRecords=matchingMTO(readMTODisc("UPDB.csv"),readMTOAUD("AUDDB.csv"))
+            self.DocRecords=MTORead("AUDDB.csv")
+            #self.DocRecords=matchingMTO(readMTODisc("UPDB.csv"),readMTOAUD("AUDDB.csv"))
             self.doc = docx.Document('Testooo.docx')
             #self.table = self.doc.add_table(rows=1,cols=5, style='Table Grid')
             for self.table in self.doc.tables:
@@ -773,7 +774,8 @@ class MainAppWindow(QtWidgets.QMainWindow):
 
             
         elif self.Document==2:
-            self.DocRecords=matchingKO(readKODisc("UPDB.csv"),readKOTeacher("PPSDB.csv"))
+            self.DocRecords=KORead("PPSDB.csv", findDiscForTeacher())
+            #self.DocRecords=matchingKO(readKODisc("UPDB.csv"),readKOTeacher("PPSDB.csv"))
             print(self.DocRecords)
             self.doc = docx.Document('Testoko.docx')
             for x in self.DocRecords:
@@ -815,6 +817,12 @@ class MainAppWindow(QtWidgets.QMainWindow):
                 elif y.get("Zvanie")==2:
                     self.PPSz = 'Профессор'
                 self.qboxPPS2 = self.PPSd + ' ' + self.PPSs + ' ' + self.PPSz
+            
+            for z in self.DocRecords:
+                self.Disco = z.get("Disc")[0] + ' ' + z.get("Disc")[1] + ' ' + z.get("Disc")[2] + ' ' + z.get("Disc")[3]
+                #self.Disco = []
+                #for i in range(len(z.get("Disc"))):
+                #    self.Disco+=z.get("Disc")[i]+'\n'
 
 
             for self.table in self.doc.tables:
@@ -831,7 +839,7 @@ class MainAppWindow(QtWidgets.QMainWindow):
                     row_cells[1].text = i.get('FIO')
                     row_cells[2].text = self.qboxPPS
                     row_cells[3].text = self.qboxPPS2
-                    row_cells[4].text = i.get('Discipline')
+                    row_cells[4].text = self.Disco
                     row_cells[5].text = i.get('Napravlenie')
                     row_cells[6].text = str(i.get('Education'))
             for self.table in self.doc.tables:
