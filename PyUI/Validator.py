@@ -49,14 +49,14 @@ class PPSValidator:
 
     def NaprPodgotov(self, NaprPodgotov):
         Truth=False
-        RegExp= r"^(([\ ]?[(\)?)\w(\)?)]+([\«\»\№\ :,.;\-]+)?([\d]+(([\-\.])?([\d]+)?)([\-\.])?)?)+)"
+        RegExp= r"^(([\ ]?[(\ )?)А-я(\ )?)]+([\"\«\»\№\ :,.;\-]+)?([\d]+(([\-\.])?([\d]+)?)([\-\.])?)?)+)"
         if re.fullmatch(RegExp,NaprPodgotov)!=None:
             Truth=True
         return Truth
 
     def EducationValid(self, Education):
         Truth=False
-        RegExp= r"^(([\ ]?[(\)?)\w(\)?)]+([\«\»\№\ :,.;\-]+)?([\d]+(([\-\.])?([\d]+)?)([\-\.])?)?)+)"
+        RegExp= r"^(([\ ]?[(\ )?)А-я(\ )?)]+([\"\«\»\№\ :,.;\-]+)?([\d]+(([\-\.])?([\d]+)?)([\-\.])?)?)+)"
         if re.fullmatch(RegExp,Education)!=None:
             Truth=True
         return Truth
