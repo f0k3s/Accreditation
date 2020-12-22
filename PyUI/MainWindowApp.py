@@ -299,7 +299,6 @@ class KOEditorWindow(QtWidgets.QMainWindow):
     def delRecord(self):
         self.ui.tb_KO.removeRow(self.ui.tb_KO.currentRow())
         self.row=self.ui.tb_KO.currentRow()
-        self.ui.tb_KO.setCurrentCell(self.row-1,0)
         self.records.pop(self.row)
         writeCSV("PPSDB.csv",self.records)
         
@@ -349,15 +348,7 @@ class KOEditorWindow(QtWidgets.QMainWindow):
         self.Education=self.ui.tE_NaprPodgotov.toPlainText()
 
         if (self.PPSValid.FIOValid(self.FIO))==True:
-            if (self.PPSValid.NaprPodgotov(self.NaprPodgotov))==True:
-                if (self.PPSValid.EducationValid(self.Education))==True:
-                    return True
-                else:
-                    self.EducationDialogUi.show()
-                    return False
-            else:
-                self.NaprPodgotovDialogUi.show()
-                return False
+            return True
         else:
             self.FIODialogUi.show()
             return False
@@ -408,29 +399,105 @@ class UPEditorWindow(QtWidgets.QMainWindow):
 
     def addTEACHER2(self):
         self.ui.TEACHER2.setVisible(True)
-        self.TeachersAmount+=1
+        self.TeachersAmount=2
     
     def addTEACHER3(self):
         self.ui.TEACHER3.setVisible(True)
-        self.TeachersAmount+=1
+        self.TeachersAmount=3
 
     def addTEACHER4(self):
         self.ui.TEACHER4.setVisible(True)
-        self.TeachersAmount+=1
+        self.TeachersAmount=4
 
     def addTEACHER5(self):
         self.ui.TEACHER5.setVisible(True)
-        self.TeachersAmount+=1
+        self.TeachersAmount=5
 
     def addTEACHER6(self):
         self.ui.TEACHER6.setVisible(True)
-        self.TeachersAmount+=1
+        self.TeachersAmount=6
 
 
 
     def remTEACHER2(self):
-        self.ui.TEACHER2.setVisible(False)
-        self.TeachersAmount-=1
+        if self.TeachersAmount==6:
+            self.ui.cb_Teacher2.setCurrentIndex(self.ui.cb_Teacher3.currentIndex())
+            self.ui.cb_Teacher3.setCurrentIndex(self.ui.cb_Teacher4.currentIndex())
+            self.ui.cb_Teacher4.setCurrentIndex(self.ui.cb_Teacher5.currentIndex())
+            self.ui.cb_Teacher5.setCurrentIndex(self.ui.cb_Teacher6.currentIndex())
+            self.ui.cb_Teacher6.setCurrentIndex(0)
+            self.ui.TEACHER6.setVisible(False)
+        elif self.TeachersAmount==5:
+            self.ui.cb_Teacher2.setCurrentIndex(self.ui.cb_Teacher3.currentIndex())
+            self.ui.cb_Teacher3.setCurrentIndex(self.ui.cb_Teacher4.currentIndex())
+            self.ui.cb_Teacher4.setCurrentIndex(self.ui.cb_Teacher5.currentIndex())
+            self.ui.cb_Teacher5.setCurrentIndex(0)
+            self.ui.TEACHER5.setVisible(False)
+        elif self.TeachersAmount==4:
+            self.ui.cb_Teacher2.setCurrentIndex(self.ui.cb_Teacher3.currentIndex())
+            self.ui.cb_Teacher3.setCurrentIndex(self.ui.cb_Teacher4.currentIndex())
+            self.ui.cb_Teacher4.setCurrentIndex(0)
+            self.ui.TEACHER4.setVisible(False)
+        elif self.TeachersAmount==3:
+            self.ui.cb_Teacher2.setCurrentIndex(self.ui.cb_Teacher3.currentIndex())
+            self.ui.cb_Teacher3.setCurrentIndex(0)
+            self.ui.TEACHER3.setVisible(False)
+        elif self.TeachersAmount==2:
+            self.ui.cb_Teacher2.setCurrentIndex(0)
+            self.ui.TEACHER2.setVisible(False)
+        self.TeachersAmount=self.TeachersAmount-1
+        print(self.TeachersAmount)
+    
+    def remTEACHER3(self):
+        if self.TeachersAmount==6:
+            self.ui.cb_Teacher3.setCurrentIndex(self.ui.cb_Teacher4.currentIndex())
+            self.ui.cb_Teacher4.setCurrentIndex(self.ui.cb_Teacher5.currentIndex())
+            self.ui.cb_Teacher5.setCurrentIndex(self.ui.cb_Teacher6.currentIndex())
+            self.ui.cb_Teacher6.setCurrentIndex(0)
+            self.ui.TEACHER6.setVisible(False)
+        elif self.TeachersAmount==5:
+            self.ui.cb_Teacher3.setCurrentIndex(self.ui.cb_Teacher4.currentIndex())
+            self.ui.cb_Teacher4.setCurrentIndex(self.ui.cb_Teacher5.currentIndex())
+            self.ui.cb_Teacher5.setCurrentIndex(0)
+            self.ui.TEACHER5.setVisible(False)
+        elif self.TeachersAmount==4:
+            self.ui.cb_Teacher3.setCurrentIndex(self.ui.cb_Teacher4.currentIndex())
+            self.ui.cb_Teacher4.setCurrentIndex(0)
+            self.ui.TEACHER4.setVisible(False)
+        elif self.TeachersAmount==3:
+            self.ui.cb_Teacher3.setCurrentIndex(0)
+            self.ui.TEACHER3.setVisible(False)
+        self.TeachersAmount=self.TeachersAmount-1
+
+    def remTEACHER4(self):
+        if self.TeachersAmount==6:
+            self.ui.cb_Teacher4.setCurrentIndex(self.ui.cb_Teacher5.currentIndex())
+            self.ui.cb_Teacher5.setCurrentIndex(self.ui.cb_Teacher6.currentIndex())
+            self.ui.cb_Teacher6.setCurrentIndex(0)
+            self.ui.TEACHER6.setVisible(False)
+        elif self.TeachersAmount==5:
+            self.ui.cb_Teacher4.setCurrentIndex(self.ui.cb_Teacher5.currentIndex())
+            self.ui.cb_Teacher5.setCurrentIndex(0)
+            self.ui.TEACHER5.setVisible(False)
+        elif self.TeachersAmount==4:
+            self.ui.cb_Teacher4.setCurrentIndex(0)
+            self.ui.TEACHER4.setVisible(False)
+        self.TeachersAmount=self.TeachersAmount-1
+
+    def remTEACHER5(self):
+        if self.TeachersAmount==6:
+            self.ui.cb_Teacher5.setCurrentIndex(self.ui.cb_Teacher6.currentIndex())
+            self.ui.cb_Teacher6.setCurrentIndex(0)
+            self.ui.TEACHER6.setVisible(False)
+        elif self.TeachersAmount==5:
+            self.ui.cb_Teacher5.setCurrentIndex(0)
+            self.ui.TEACHER5.setVisible(False)
+        self.TeachersAmount=self.TeachersAmount-1
+
+    def remTEACHER6(self):
+        self.ui.cb_Teacher6.setCurrentIndex(0)
+        self.ui.TEACHER6.setVisible(False)
+        self.TeachersAmount=self.TeachersAmount-1
 
 
     def addAud(self,item):
@@ -467,10 +534,46 @@ class UPEditorWindow(QtWidgets.QMainWindow):
             self.NumberUD = str(self.ui.le_NumberUD.text()) 
             for i in range(0,self.ui.list_ChosAud.count()):
                 self.Audience.append(self.ui.list_ChosAud.item(i).text())
-            #self.Teacher+=self.ui.lt_ChosenTeacher.item(0).text()
+
+            if self.TeachersAmount==1:
+                self.Teacher.append(self.ui.cb_Teacher1.currentText())
+
+            elif self.TeachersAmount==2:
+                self.Teacher.append(self.ui.cb_Teacher1.currentText())
+                self.Teacher.append(self.ui.cb_Teacher2.currentText())
+
+            elif self.TeachersAmount==3:
+                self.Teacher.append(self.ui.cb_Teacher1.currentText())
+                self.Teacher.append(self.ui.cb_Teacher2.currentText())
+                self.Teacher.append(self.ui.cb_Teacher3.currentText())
+
+            elif self.TeachersAmount==4:
+                self.Teacher.append(self.ui.cb_Teacher1.currentText())
+                self.Teacher.append(self.ui.cb_Teacher2.currentText())
+                self.Teacher.append(self.ui.cb_Teacher3.currentText())
+                self.Teacher.append(self.ui.cb_Teacher4.currentText())
+
+            elif self.TeachersAmount==5:
+                self.Teacher.append(self.ui.cb_Teacher1.currentText())
+                self.Teacher.append(self.ui.cb_Teacher2.currentText())
+                self.Teacher.append(self.ui.cb_Teacher3.currentText())
+                self.Teacher.append(self.ui.cb_Teacher4.currentText())
+                self.Teacher.append(self.ui.cb_Teacher5.currentText())
+
+            elif self.TeachersAmount==6:
+                self.Teacher.append(self.ui.cb_Teacher1.currentText())
+                self.Teacher.append(self.ui.cb_Teacher2.currentText())
+                self.Teacher.append(self.ui.cb_Teacher3.currentText())
+                self.Teacher.append(self.ui.cb_Teacher4.currentText())
+                self.Teacher.append(self.ui.cb_Teacher5.currentText())
+                self.Teacher.append(self.ui.cb_Teacher6.currentText())
+
             self.record = {'NameUD': self.NameUD, 'NumberUD' : self.NumberUD, 'Teacher': self.Teacher, "Audience":self.Audience, "Amount":self.TeachersAmount }
+            print(self.record)
             self.records.append(self.record)
             writeCSV("UPDB.csv",self.records)
+            self.Teacher.clear()
+            self.TeachersAmount=1
             self.tableRecords()
 
     def tableRecords(self):
@@ -502,8 +605,69 @@ class UPEditorWindow(QtWidgets.QMainWindow):
         self.ui.pb_Add.setEnabled(True)
         self.ui.pb_Edit.setEnabled(True)
 
-    def ShowRecord(self):
-        pass
+    def ShowRecord(self,item):
+        self.ui.list_ChosAud.clear()
+        temp = re.findall(r'[А-я]+\-\d{3}',self.records[self.ui.list_Disc.currentRow()].get("Audience"))
+        res = list(map(str, temp))
+        for i in range(len(res)):
+            self.ui.list_ChosAud.addItem(res[i])
+        temp = re.findall(r'([А-я]+\ [А-я]+\ [А-я]+)',self.records[self.ui.list_Disc.currentRow()].get("Teacher"))
+        res = list(map(str, temp))
+
+        self.ui.le_NameUD.setText(self.records[self.ui.list_Disc.currentRow()].get("NameUD"))
+        self.ui.le_NumberUD.setText(self.records[self.ui.list_Disc.currentRow()].get("NumberUD"))
+
+        self.ui.TEACHER2.setVisible(False)
+        self.ui.TEACHER3.setVisible(False)
+        self.ui.TEACHER4.setVisible(False)
+        self.ui.TEACHER5.setVisible(False)
+        self.ui.TEACHER6.setVisible(False)
+
+        self.TeachersAmount=int(self.records[self.ui.list_Disc.currentRow()].get("Amount"))
+        print(self.records[self.ui.list_Disc.currentRow()])
+
+        if self.records[self.ui.list_Disc.currentRow()].get("Amount")==str(1):
+            self.ui.cb_Teacher1.setCurrentIndex(self.ui.cb_Teacher1.findText(res[0]))
+        elif self.records[self.ui.list_Disc.currentRow()].get("Amount")==str(2):
+            self.ui.cb_Teacher1.setCurrentIndex(self.ui.cb_Teacher1.findText(res[0]))
+            self.ui.cb_Teacher2.setCurrentIndex(self.ui.cb_Teacher2.findText(res[1]))
+            self.ui.TEACHER2.setVisible(True)
+        elif self.records[self.ui.list_Disc.currentRow()].get("Amount")==str(3):
+            self.ui.cb_Teacher1.setCurrentIndex(self.ui.cb_Teacher1.findText(res[0]))
+            self.ui.cb_Teacher2.setCurrentIndex(self.ui.cb_Teacher2.findText(res[1]))
+            self.ui.cb_Teacher3.setCurrentIndex(self.ui.cb_Teacher3.findText(res[2]))
+            self.ui.TEACHER2.setVisible(True)
+            self.ui.TEACHER3.setVisible(True)
+        elif self.records[self.ui.list_Disc.currentRow()].get("Amount")==str(4):
+            self.ui.cb_Teacher1.setCurrentIndex(self.ui.cb_Teacher1.findText(res[0]))
+            self.ui.cb_Teacher2.setCurrentIndex(self.ui.cb_Teacher2.findText(res[1]))
+            self.ui.cb_Teacher3.setCurrentIndex(self.ui.cb_Teacher3.findText(res[2]))
+            self.ui.cb_Teacher4.setCurrentIndex(self.ui.cb_Teacher4.findText(res[3]))
+            self.ui.TEACHER2.setVisible(True)
+            self.ui.TEACHER3.setVisible(True)
+            self.ui.TEACHER4.setVisible(True)
+        elif self.records[self.ui.list_Disc.currentRow()].get("Amount")==str(5):
+            self.ui.cb_Teacher1.setCurrentIndex(self.ui.cb_Teacher1.findText(res[0]))
+            self.ui.cb_Teacher2.setCurrentIndex(self.ui.cb_Teacher2.findText(res[1]))
+            self.ui.cb_Teacher3.setCurrentIndex(self.ui.cb_Teacher3.findText(res[2]))
+            self.ui.cb_Teacher4.setCurrentIndex(self.ui.cb_Teacher4.findText(res[3]))
+            self.ui.cb_Teacher5.setCurrentIndex(self.ui.cb_Teacher5.findText(res[4]))
+            self.ui.TEACHER2.setVisible(True)
+            self.ui.TEACHER3.setVisible(True)
+            self.ui.TEACHER4.setVisible(True)
+            self.ui.TEACHER5.setVisible(True)
+        elif self.records[self.ui.list_Disc.currentRow()].get("Amount")==str(6):
+            self.ui.cb_Teacher1.setCurrentIndex(self.ui.cb_Teacher1.findText(res[0]))
+            self.ui.cb_Teacher2.setCurrentIndex(self.ui.cb_Teacher2.findText(res[1]))
+            self.ui.cb_Teacher3.setCurrentIndex(self.ui.cb_Teacher3.findText(res[2]))
+            self.ui.cb_Teacher4.setCurrentIndex(self.ui.cb_Teacher4.findText(res[3]))
+            self.ui.cb_Teacher5.setCurrentIndex(self.ui.cb_Teacher5.findText(res[4]))
+            self.ui.cb_Teacher6.setCurrentIndex(self.ui.cb_Teacher6.findText(res[5]))
+            self.ui.TEACHER2.setVisible(True)
+            self.ui.TEACHER3.setVisible(True)
+            self.ui.TEACHER4.setVisible(True)
+            self.ui.TEACHER5.setVisible(True)
+            self.ui.TEACHER6.setVisible(True)
 
     """def validation(self):
         self.UPValid=Validator.UPValidator()
@@ -584,11 +748,6 @@ class MainAppWindow(QtWidgets.QMainWindow):
                 if counter<1:
                     cleanDirectory=cleanDirectory+directory[i]
             self.doc.save(cleanDirectory)
-
-
-            
-
-
 
             
         elif self.Document==2:

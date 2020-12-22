@@ -46,7 +46,7 @@ def UPreadCSV(Filename):
             reader = csv.reader(file)
             for row in reader:
                 if row:
-                    record={'NameUD': row[0], 'NumberUD' : row[1], 'FIO': row[2], "Audience":row[3],"Amount":row[4]}
+                    record={'NameUD': row[0], 'NumberUD' : row[1], 'Teacher': row[2], "Audience":row[3],"Amount":row[4]}
                     datas.append(record)
     return datas
 
