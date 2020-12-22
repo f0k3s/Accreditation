@@ -818,11 +818,10 @@ class MainAppWindow(QtWidgets.QMainWindow):
                     self.PPSz = 'Профессор'
                 self.qboxPPS2 = self.PPSd + ' ' + self.PPSs + ' ' + self.PPSz
             
-            for z in self.DocRecords:
-                self.Disco = z.get("Disc")[0] + ' ' + z.get("Disc")[1] + ' ' + z.get("Disc")[2] + ' ' + z.get("Disc")[3]
-                #self.Disco = []
-                #for i in range(len(z.get("Disc"))):
-                #    self.Disco+=z.get("Disc")[i]+'\n'
+            """for z in self.DocRecords:
+                self.Disco = []
+                for z in range(len(z.get("Disc"))):
+                    self.Disco+=z.get("Disc")[z]+'\n'"""
 
 
             for self.table in self.doc.tables:
@@ -839,6 +838,9 @@ class MainAppWindow(QtWidgets.QMainWindow):
                     row_cells[1].text = i.get('FIO')
                     row_cells[2].text = self.qboxPPS
                     row_cells[3].text = self.qboxPPS2
+                    self.Disco = []
+                    for z in range(len(i.get("Disc"))):
+                        self.Disco+=i.get("Disc")[z]+'\n'
                     row_cells[4].text = self.Disco
                     row_cells[5].text = i.get('Napravlenie')
                     row_cells[6].text = str(i.get('Education'))
