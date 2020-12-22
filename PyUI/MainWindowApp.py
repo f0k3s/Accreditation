@@ -572,18 +572,17 @@ class MainAppWindow(QtWidgets.QMainWindow):
             for self.table in self.doc.tables:
                 for row in self.table.rows:
                     row_count = len(self.table.rows)
-                    print(row_count)
                     for cell in row.cells:
                         for paragraph in cell.paragraphs:
                             for self.op in range(row_count-1):
                                 firstC = self.table.cell(self.op, 1).text
                                 self.op=self.op+1
                                 secondC = self.table.cell(self.op, 1).text
-                            if firstC == secondC:
-                                thirdC = self.table.cell(self.op, 1).text
-                                self.table.cell(self.op, 1).text = ""
-                                self.table.cell(self.op, 1).merge(self.table.cell(self.op-1, 1))
-                                self.table.cell(self.op, 1).text = thirdC
+                                if firstC == secondC:
+                                    thirdC = self.table.cell(self.op, 1).text
+                                    self.table.cell(self.op, 1).text = ""
+                                    self.table.cell(self.op, 1).merge(self.table.cell(self.op-1, 1))
+                                    self.table.cell(self.op, 1).text = thirdC
                 self.filename=QtWidgets.QFileDialog.getSaveFileName(self, "Выберите файл", os.getcwd(), ".DOCX Файлы (*.docx)")
                 directory=str(self.filename)
                 cleanDirectory=""
@@ -663,6 +662,45 @@ class MainAppWindow(QtWidgets.QMainWindow):
                     row_cells[4].text = i.get('Discipline')
                     row_cells[5].text = i.get('Napravlenie')
                     row_cells[6].text = str(i.get('Education'))
+            for self.table in self.doc.tables:
+                for row in self.table.rows:
+                    row_count = len(self.table.rows)
+                    for cell in row.cells:
+                        for paragraph in cell.paragraphs:
+                            for self.op in range(0, row_count-1):
+                                firstC = self.table.cell(self.op, 1).text
+                                self.op=self.op+1
+                                secondC = self.table.cell(self.op, 1).text
+                                if firstC == secondC:
+                                    thirdC = self.table.cell(self.op, 1).text
+                                    self.table.cell(self.op, 1).text = ""
+                                    self.table.cell(self.op, 1).merge(self.table.cell(self.op-1, 1))
+                                    self.table.cell(self.op, 1).text = thirdC
+
+                                    thirdC0 = self.table.cell(self.op, 0).text
+                                    self.table.cell(self.op, 0).text = ""
+                                    self.table.cell(self.op, 0).merge(self.table.cell(self.op-1, 0))
+                                    self.table.cell(self.op, 0).text = thirdC0
+
+                                    thirdC2 = self.table.cell(self.op, 2).text
+                                    self.table.cell(self.op, 2).text = ""
+                                    self.table.cell(self.op, 2).merge(self.table.cell(self.op-1, 2))
+                                    self.table.cell(self.op, 2).text = thirdC2
+
+                                    thirdC3 = self.table.cell(self.op, 3).text
+                                    self.table.cell(self.op, 3).text = ""
+                                    self.table.cell(self.op, 3).merge(self.table.cell(self.op-1, 3))
+                                    self.table.cell(self.op, 3).text = thirdC3
+                                    
+                                    thirdC5 = self.table.cell(self.op,5).text
+                                    self.table.cell(self.op, 5).text = ""
+                                    self.table.cell(self.op, 5).merge(self.table.cell(self.op-1, 5))
+                                    self.table.cell(self.op, 5).text = thirdC5
+                                    
+                                    thirdC6 = self.table.cell(self.op, 6).text
+                                    self.table.cell(self.op, 6).text = ""
+                                    self.table.cell(self.op, 6).merge(self.table.cell(self.op-1, 6))
+                                    self.table.cell(self.op, 6).text = thirdC6
 
                 self.filename=QtWidgets.QFileDialog.getSaveFileName(self, "Выберите файл", os.getcwd(), ".DOCX Файлы (*.docx)")
                 directory=str(self.filename)
