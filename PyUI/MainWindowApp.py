@@ -88,7 +88,7 @@ class AudienceEditorWindow(QtWidgets.QMainWindow):
         self.ui.pb_Edit.clicked.connect(self.editRecord)
         self.ui.pb_Save.setEnabled(False)
 
-        self.ui.tb_Audience.cellClicked.connect(self.ShowRecord)
+        self.ui.tb_Audience.currentCellChanged.connect(self.ShowRecord)
         #if self.ui.tb_Audience.cellClicked(self.ui.tb_Audience.currentRow(), self.ui.tb_Audience.currentColumn()):
             #self.ui.pb_Edit.setEnabled(True)
         #else:
@@ -156,6 +156,7 @@ class AudienceEditorWindow(QtWidgets.QMainWindow):
                 self.ui.tb_Audience.setItem(self.rowCount, 1, QtWidgets.QTableWidgetItem(self.records[self.rowCount].get('AudienceNaimenovanie')))
                 self.ui.tb_Audience.setItem(self.rowCount, 2, QtWidgets.QTableWidgetItem(self.records[self.rowCount].get('AudienceTO')))
                 self.ui.tb_Audience.setItem(self.rowCount, 3, QtWidgets.QTableWidgetItem(self.records[self.rowCount].get('AudiencePO')))
+        self.ui.tb_Audience.setCurrentCell(0,0)
 
         
     def delRecord(self):
@@ -205,7 +206,7 @@ class KOEditorWindow(QtWidgets.QMainWindow):
         self.ui.pb_Add.clicked.connect(self.addRecord)
         self.ui.pb_Delete.clicked.connect(self.delRecord)
         self.ui.pb_Edit.clicked.connect(self.editRecord)
-        self.ui.tb_KO.cellClicked.connect(self.ShowRecord)
+        self.ui.tb_KO.currentCellChanged.connect(self.ShowRecord)
         self.ui.pb_Save.setEnabled(False)
 
         self.FIODialogUi=FIODialog()
@@ -294,6 +295,7 @@ class KOEditorWindow(QtWidgets.QMainWindow):
                 self.ui.tb_KO.setItem(self.rowCount, 4, QtWidgets.QTableWidgetItem(self.ui.cb_zvan.itemText(self.records[self.rowCount].get("Zvanie"))))
                 self.ui.tb_KO.setItem(self.rowCount, 5, QtWidgets.QTableWidgetItem(self.records[self.rowCount].get('Napravlenie')))
                 self.ui.tb_KO.setItem(self.rowCount, 6, QtWidgets.QTableWidgetItem(self.records[self.rowCount].get('Education')))
+            self.ui.tb_KO.setCurrentCell(0,0)
 
 
     def delRecord(self):
@@ -389,7 +391,7 @@ class UPEditorWindow(QtWidgets.QMainWindow):
 
         self.ui.list_AllAud.itemDoubleClicked.connect(self.addAud)
         self.ui.list_ChosAud.itemDoubleClicked.connect(self.removeAud)
-        self.ui.list_Disc.itemClicked.connect(self.ShowRecord)
+        self.ui.list_Disc.currentRowChanged.connect(self.ShowRecord)
 
         self.ui.pb_Save.setEnabled(False)
 
@@ -582,13 +584,19 @@ class UPEditorWindow(QtWidgets.QMainWindow):
         if self.records:
             for rec in self.records:
                 self.ui.list_Disc.addItem(rec.get("NameUD"))
+        self.ui.list_Disc.setCurrentRow(0)
         
 
     def delRecord(self):
         self.ui.list_Disc.removeItemWidget(self.ui.list_Disc.currentItem())
+        if self.ui.list_Disc.currentRow()!=1:
+            self.ui.list_Disc.setCurrentRow(self.ui.list_Disc.currentRow()-1)
+        elif self.ui.list_Disc.count()>self.ui.list_Disc.currentRow():
+            self.ui.list_Disc.setCurrentRow(self.ui.list_Disc.currentRow())
         self.records.pop(self.ui.list_Disc.currentRow())
         writeCSV("UPDB.csv",self.records)
         self.tableRecords()
+        
         
     def editRecord(self):
         self.ui.pb_Save.setEnabled(True)
