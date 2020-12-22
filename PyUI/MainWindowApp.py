@@ -285,7 +285,7 @@ class KOEditorWindow(QtWidgets.QMainWindow):
                     self.c3PPS  = str('')
 
                 self.qboxPPS = self.c1PPS + ' ' + self.c2PPS + ' ' + self.c3PPS
-
+                
 
                 self.ui.tb_KO.setItem(self.rowCount, 0, QtWidgets.QTableWidgetItem(self.records[self.rowCount].get('FIO')))
                 self.ui.tb_KO.setItem(self.rowCount, 1, QtWidgets.QTableWidgetItem(self.qboxPPS))
@@ -367,108 +367,125 @@ class UPEditorWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super(UPEditorWindow, self).__init__()
         self.ui=Ui_UPEditor()
-        self.Audience=''
-        self.Teacher=''
+        self.Audience=[]
+        self.Teacher=[]
+        self.TeachersAmount=1
+
         self.ui.setupUi(self)
         
-        self.tableRecords()
+        self.ui.TEACHER2.setVisible(False)
+        self.ui.TEACHER3.setVisible(False)
+        self.ui.TEACHER4.setVisible(False)
+        self.ui.TEACHER5.setVisible(False)
+        self.ui.TEACHER6.setVisible(False)
+
+        self.ui.pb_Add2.clicked.connect(self.addTEACHER2)
+        self.ui.pb_Add3.clicked.connect(self.addTEACHER3)
+        self.ui.pb_Add4.clicked.connect(self.addTEACHER4)
+        self.ui.pb_Add5.clicked.connect(self.addTEACHER5)
+        self.ui.pb_Add6.clicked.connect(self.addTEACHER6)
+
+        self.ui.pb_Del2.clicked.connect(self.remTEACHER2)
+        self.ui.pb_Del3.clicked.connect(self.remTEACHER3)
+        self.ui.pb_Del4.clicked.connect(self.remTEACHER4)
+        self.ui.pb_Del5.clicked.connect(self.remTEACHER5)
+        self.ui.pb_Del6.clicked.connect(self.remTEACHER6)
+
         self.ui.pb_Save.clicked.connect(self.saveRecord)
         self.ui.pb_Add.clicked.connect(self.addRecord)
         self.ui.pb_Delete.clicked.connect(self.delRecord)
         self.ui.pb_Edit.clicked.connect(self.editRecord)
-        self.ui.lt_AvailTeachers.itemDoubleClicked.connect(self.addTeacher)
-        self.ui.lt_ChosenTeacher.itemDoubleClicked.connect(self.removeTeacher)
-        self.ui.lt_AvailAudience.itemDoubleClicked.connect(self.addAud)
-        self.ui.lt_ChosenAudience.itemDoubleClicked.connect(self.removeAud)
-        self.ui.tb_UP.cellClicked.connect(self.ShowRecord)
+
+        self.ui.list_AllAud.itemDoubleClicked.connect(self.addAud)
+        self.ui.list_ChosAud.itemDoubleClicked.connect(self.removeAud)
+        self.ui.list_Disc.itemClicked.connect(self.ShowRecord)
+
         self.ui.pb_Save.setEnabled(False)
 
-        self.NameUDDialogUi=NameUDDialog()
-        self.NameUDDialogUi.setupUi(self)
-
-        self.NumberUDDialogUi=NumberUDDialog()
-        self.NumberUDDialogUi.setupUi(self)
-
-        self.TeacherDialogUi=TeacherDialog()
-        self.TeacherDialogUi.setupUi(self)
-
-        self.AudDialogUi=AudDialog()
-        self.AudDialogUi.setupUi(self)
-
-    def addTeacher(self,item):
-        if self.ui.lt_ChosenTeacher.count()<1:
-            self.ui.lt_ChosenTeacher.addItem(item.text())
+        self.tableRecords()
+        self.LoadKOAndAud()
 
 
-    def removeTeacher(self,item):
-        self.ui.lt_ChosenTeacher.takeItem(self.ui.lt_ChosenTeacher.currentRow())
+    def addTEACHER2(self):
+        self.ui.TEACHER2.setVisible(True)
+        self.TeachersAmount+=1
+    
+    def addTEACHER3(self):
+        self.ui.TEACHER3.setVisible(True)
+        self.TeachersAmount+=1
+
+    def addTEACHER4(self):
+        self.ui.TEACHER4.setVisible(True)
+        self.TeachersAmount+=1
+
+    def addTEACHER5(self):
+        self.ui.TEACHER5.setVisible(True)
+        self.TeachersAmount+=1
+
+    def addTEACHER6(self):
+        self.ui.TEACHER6.setVisible(True)
+        self.TeachersAmount+=1
+
+
+
+    def remTEACHER2(self):
+        self.ui.TEACHER2.setVisible(False)
+        self.TeachersAmount-=1
 
 
     def addAud(self,item):
-        if self.ui.lt_ChosenAudience.count()<1:
-            self.ui.lt_ChosenAudience.addItem(item.text())
+        if len(self.ui.list_ChosAud.findItems(item.text(),QtCore.Qt.MatchExactly))<1:
+            self.ui.list_ChosAud.addItem(item.text())
 
     def removeAud(self,item):
-        self.ui.lt_ChosenAudience.takeItem(self.ui.lt_ChosenAudience.currentRow())
+        self.ui.list_ChosAud.takeItem(self.ui.list_ChosAud.currentRow())
 
     def closeEvent(self,event):
         self.MainAppWindowShow=MainAppWindow()
         self.MainAppWindowShow.show()
         self.close()
 
+    def LoadKOAndAud(self):
+        self.Teachers=TeacherreadCSV("PPSDB.csv")
+        if self.Teachers:
+            for j in self.Teachers:
+                self.ui.cb_Teacher1.addItem(j)
+                self.ui.cb_Teacher2.addItem(j)
+                self.ui.cb_Teacher3.addItem(j)
+                self.ui.cb_Teacher4.addItem(j)
+                self.ui.cb_Teacher5.addItem(j)
+                self.ui.cb_Teacher6.addItem(j)
+        self.Audiences=TeacherreadCSV("AUDDB.csv")
+        if self.Audiences:
+            for j in range(len(self.Audiences)):
+                self.ui.list_AllAud.addItem(self.Audiences[j])
+
 
     def addRecord(self):
-        if self.validation()==True:
-            print(self.ui.lt_ChosenAudience.count())
+        if True==True:
             self.NameUD = str(self.ui.le_NameUD.text())
             self.NumberUD = str(self.ui.le_NumberUD.text()) 
-            self.Audience+=self.ui.lt_ChosenAudience.item(0).text()
-            self.Teacher+=self.ui.lt_ChosenTeacher.item(0).text()
-            self.IntensityUD = int(self.ui.sp_IntensityUD.text()) 
-            self.CreditUnits = int(self.ui.sp_CreditUnits.text())
-            self.TimeUD = int(self.ui.sp_Time.text())
-            self.LectionUD = int(self.ui.sp_Lection.text())
-            self.PracticeUD = int(self.ui.sp_Practice.text())
-            self.LabWorkUD = int(self.ui.sp_LabWork.text())
-            self.record = {'NameUD': self.NameUD, 'NumberUD' : self.NumberUD, 'FIO': self.Teacher, "Audience":self.Audience, 'IntensityUD': self.IntensityUD, 'CreditUnit' : self.CreditUnits, 'TimeUD' : self.TimeUD, 'LectionUD' : self.LectionUD, 'PracticeUD' : self.PracticeUD, 'LabWorkUD' : self.LabWorkUD }
+            for i in range(0,self.ui.list_ChosAud.count()):
+                self.Audience.append(self.ui.list_ChosAud.item(i).text())
+            #self.Teacher+=self.ui.lt_ChosenTeacher.item(0).text()
+            self.record = {'NameUD': self.NameUD, 'NumberUD' : self.NumberUD, 'Teacher': self.Teacher, "Audience":self.Audience, "Amount":self.TeachersAmount }
             self.records.append(self.record)
             writeCSV("UPDB.csv",self.records)
             self.tableRecords()
 
     def tableRecords(self):
-        self.Teachers=TeacherreadCSV("PPSDB.csv")
-        if self.Teachers:
-            for j in range(len(self.Teachers)):
-                self.ui.lt_AvailTeachers.addItem(self.Teachers[j])
-        self.Audinces=TeacherreadCSV("AUDDB.csv")
-        if self.Audinces:
-            for j in range(len(self.Audinces)):
-                self.ui.lt_AvailAudience.addItem(self.Audinces[j])
+        self.ui.list_Disc.clear()
         self.records=UPreadCSV("UPDB.csv")
         if self.records:
-            self.ui.tb_UP.setRowCount(0)
-            self.index = len(self.records)
-            for i in range(0, self.index):
-                self.rowCount= i
-                self.ui.tb_UP.insertRow(self.rowCount)
-                self.ui.tb_UP.setItem(self.rowCount, 0, QtWidgets.QTableWidgetItem(str(self.rowCount+1)))
-                self.ui.tb_UP.setItem(self.rowCount, 1, QtWidgets.QTableWidgetItem(self.records[self.rowCount].get('NameUD')))
-                self.ui.tb_UP.setItem(self.rowCount, 2, QtWidgets.QTableWidgetItem(self.records[self.rowCount].get('NumberUD')))
-                self.ui.tb_UP.setItem(self.rowCount, 3, QtWidgets.QTableWidgetItem(self.records[self.rowCount].get('FIO')))
-                self.ui.tb_UP.setItem(self.rowCount, 4, QtWidgets.QTableWidgetItem(self.records[self.rowCount].get('Audience')))
-                self.ui.tb_UP.setItem(self.rowCount, 5, QtWidgets.QTableWidgetItem(str(self.records[self.rowCount].get('IntensityUD'))))
-                self.ui.tb_UP.setItem(self.rowCount, 6, QtWidgets.QTableWidgetItem(str(self.records[self.rowCount].get('CreditUnit'))))
-                self.ui.tb_UP.setItem(self.rowCount, 7, QtWidgets.QTableWidgetItem(str(self.records[self.rowCount].get('TimeUD'))))
-                self.ui.tb_UP.setItem(self.rowCount, 8, QtWidgets.QTableWidgetItem(str(self.records[self.rowCount].get('LectionUD'))))
-                self.ui.tb_UP.setItem(self.rowCount, 9, QtWidgets.QTableWidgetItem(str(self.records[self.rowCount].get('PracticeUD'))))
-                self.ui.tb_UP.setItem(self.rowCount, 10, QtWidgets.QTableWidgetItem(str(self.records[self.rowCount].get('LabWorkUD'))))
+            for rec in self.records:
+                self.ui.list_Disc.addItem(rec.get("NameUD"))
+        
 
     def delRecord(self):
-        self.ui.tb_UP.removeRow(self.ui.tb_UP.currentRow())
-        self.row=self.ui.tb_UP.currentRow()
-        self.ui.tb_UP.setCurrentCell(self.row-1,0)
-        self.records.pop(self.row)
+        self.ui.list_Disc.removeItemWidget(self.ui.list_Disc.currentItem())
+        self.records.pop(self.ui.list_Disc.currentRow())
         writeCSV("UPDB.csv",self.records)
+        self.tableRecords()
         
     def editRecord(self):
         self.ui.pb_Save.setEnabled(True)
@@ -485,21 +502,10 @@ class UPEditorWindow(QtWidgets.QMainWindow):
         self.ui.pb_Add.setEnabled(True)
         self.ui.pb_Edit.setEnabled(True)
 
-    def ShowRecord(self,row,column):
-        self.ui.lt_ChosenAudience.clear()
-        self.ui.lt_ChosenTeacher.clear()
-        self.ui.le_NameUD.setText(self.records[row].get("NameUD"))
-        self.ui.le_NumberUD.setText(self.records[row].get("NumberUD"))
-        self.ui.lt_ChosenTeacher.addItem(self.records[row].get("FIO"))
-        self.ui.lt_ChosenAudience.addItem(self.records[row].get("Audience"))
-        self.ui.sp_IntensityUD.setValue(self.records[row].get("IntensityUD"))
-        self.ui.sp_CreditUnits.setValue(self.records[row].get("CreditUnit"))
-        self.ui.sp_Time.setValue(self.records[row].get("TimeUD"))
-        self.ui.sp_Lection.setValue(self.records[row].get("LectionUD"))
-        self.ui.sp_Practice.setValue(self.records[row].get("PracticeUD"))
-        self.ui.sp_LabWork.setValue(self.records[row].get("LabWorkUD"))
+    def ShowRecord(self):
+        pass
 
-    def validation(self):
+    """def validation(self):
         self.UPValid=Validator.UPValidator()
 
         self.Name=self.ui.le_NameUD.text()
@@ -521,7 +527,7 @@ class UPEditorWindow(QtWidgets.QMainWindow):
                 return False
         else:
             self.NameUDDialogUi.show()
-            return False
+            return False"""
 
 #Класс главного окна
 class MainAppWindow(QtWidgets.QMainWindow):
@@ -532,10 +538,10 @@ class MainAppWindow(QtWidgets.QMainWindow):
         self.DocRecords=[]
         self.ui.setupUi(self)
         self.setWindowTitle("Приложение для генерации справок")
-        self.ui.tb_AvailAud.setVisible(False)
-        self.ui.tb_ChosenAdu.setVisible(False)
-        self.ui.tb_AvailTeacher.setVisible(False)
-        self.ui.tb_ChosenTeacher.setVisible(False)
+        #self.ui.tb_AvailAud.setVisible(False)
+        #self.ui.tb_ChosenAdu.setVisible(False)
+        #self.ui.tb_AvailTeacher.setVisible(False)
+        #self.ui.tb_ChosenTeacher.setVisible(False)
 
         self.ui.pushButton.clicked.connect(self.save)
         self.ui.action_TemplateMTO.triggered.connect(self.MTOChosen)
@@ -555,44 +561,29 @@ class MainAppWindow(QtWidgets.QMainWindow):
         if self.Document==1:
             self.DocRecords=matchingMTO(readMTODisc("UPDB.csv"),readMTOAUD("AUDDB.csv"))
             self.doc = docx.Document('Testooo.docx')
-            #self.table = self.doc.add_table(rows=1,cols=5, style='Table Grid')
-            for self.table in self.doc.tables:
-                hdr_cells = self.table.rows[0].cells
-                hdr_cells[0].text = '№'
-                hdr_cells[1].text = 'Наименование дисциплины (модуля) практик в соответствии с учебным планом'
-                hdr_cells[2].text = 'Наименование специальных помещений и помещений для самостоятельной работы'
-                hdr_cells[3].text = 'Оснащенность специальных помещений и помещений для самостоятельной работы'
-                hdr_cells[4].text = 'Перечень лицензионного программного обеспечения. Реквизиты подтверждающего документа'
-                for i in self.DocRecords:
-                    row_cells = self.table.add_row().cells
-                    row_cells[1].text = i.get('Discipline')
-                    row_cells[2].text = i.get('AudiencePO')
-                    row_cells[3].text = i.get('AudienceTO')
-                    row_cells[4].text = i.get('AudienceNaimenovanie')
-            for self.table in self.doc.tables:
-                for row in self.table.rows:
-                    row_count = len(self.table.rows)
-                    for cell in row.cells:
-                        for paragraph in cell.paragraphs:
-                            for self.op in range(row_count-1):
-                                firstC = self.table.cell(self.op, 1).text
-                                self.op=self.op+1
-                                secondC = self.table.cell(self.op, 1).text
-                                if firstC == secondC:
-                                    thirdC = self.table.cell(self.op, 1).text
-                                    self.table.cell(self.op, 1).text = ""
-                                    self.table.cell(self.op, 1).merge(self.table.cell(self.op-1, 1))
-                                    self.table.cell(self.op, 1).text = thirdC
-                self.filename=QtWidgets.QFileDialog.getSaveFileName(self, "Выберите файл", os.getcwd(), ".DOCX Файлы (*.docx)")
-                directory=str(self.filename)
-                cleanDirectory=""
-                counter=0
-                for i  in range(2,len(directory)):
-                    if directory[i]=="\'":
-                        counter+=1
-                    if counter<1:
-                        cleanDirectory=cleanDirectory+directory[i]
-                self.doc.save(cleanDirectory)
+            self.table = self.doc.add_table(rows=1,cols=5, style='Table Grid')
+            hdr_cells = self.table.rows[0].cells
+            hdr_cells[0].text = '№'
+            hdr_cells[1].text = 'Наименование дисциплины (модуля) практик в соответствии с учебным планом'
+            hdr_cells[2].text = 'Наименование специальных помещений и помещений для самостоятельной работы'
+            hdr_cells[3].text = 'Оснащенность специальных помещений и помещений для самостоятельной работы'
+            hdr_cells[4].text = 'Перечень лицензионного программного обеспечения. Реквизиты подтверждающего документа'
+            for i in self.DocRecords:
+                row_cells = self.table.add_row().cells
+                row_cells[1].text = i.get('Discipline')
+                row_cells[2].text = i.get('AudiencePO')
+                row_cells[3].text = i.get('AudienceTO')
+                row_cells[4].text = i.get('AudienceNaimenovanie')
+            self.filename=QtWidgets.QFileDialog.getSaveFileName(self, "Выберите файл", os.getcwd(), ".DOCX Файлы (*.docx)")
+            directory=str(self.filename)
+            cleanDirectory=""
+            counter=0
+            for i  in range(2,len(directory)):
+                if directory[i]=="\'":
+                    counter+=1
+                if counter<1:
+                    cleanDirectory=cleanDirectory+directory[i]
+            self.doc.save(cleanDirectory)
 
 
             
@@ -602,116 +593,35 @@ class MainAppWindow(QtWidgets.QMainWindow):
             
         elif self.Document==2:
             self.DocRecords=matchingKO(readKODisc("UPDB.csv"),readKOTeacher("PPSDB.csv"))
-            print(self.DocRecords)
             self.doc = docx.Document('Testoko.docx')
-            for x in self.DocRecords:
-                if x.get("Uslovia")[0]==1:     
-                    self.c1PPS = 'Штатный'
-                else:
-                    self.c1PPS  = str('')
-                if x.get("Uslovia")[1]==1:
-                    self.c2PPS = 'Внутренний совместитель'
-                else:
-                    self.c2PPS  = str('')
-                if x.get("Uslovia")[2]==1:
-                    self.c3PPS = 'По договору ГСХ'
-                else:
-                    self.c3PPS  = str('')
-                self.qboxPPS = self.c1PPS + ' ' + self.c2PPS + ' ' + self.c3PPS
+            self.table = self.doc.add_table(rows=1,cols=7, style='Table Grid')
+            hdr_cells = self.table.rows[0].cells
+            hdr_cells[0].text = '№'
+            hdr_cells[1].text = 'Ф.И.О. преподавателя, реализующего программу '
+            hdr_cells[2].text = 'Условия привлечения (основное место работы: штатный, внутренний совместитель, внешний совместитель по договору ГПХ)'
+            hdr_cells[3].text = 'Должность, ученая степень, ученое звание'
+            hdr_cells[4].text = 'Перечень читаемых дисциплин '
+            hdr_cells[5].text = 'Уровень образования,наименование специальности,направления подготовки,наименование присвоенной квалификации'
+            hdr_cells[6].text = 'Сведения о дополнительном профессиональном образовании '
+            for i in self.DocRecords:
+                row_cells = self.table.add_row().cells
+                row_cells[1].text = i.get('FIO')
+                row_cells[2].text = str(i.get('Uslovia'))
+                row_cells[3].text = str(i.get('Dolzhnost'))+str(i.get('Stepen'))+str(i.get('Zvanie'))
+                row_cells[4].text = i.get('Discipline')
+                row_cells[5].text = i.get('Napravlenie')
+                row_cells[6].text = str(i.get('Education'))
 
-            for y in self.DocRecords:
-                if y.get("Dolzhnost")==0:
-                    self.PPSd = 'Преподаватель'
-                elif y.get("Dolzlhnost")==1:
-                    self.PPSd = 'Старший Преподаватель'
-                elif y.get("Dolzhnost")==2:
-                    self.PPSd = 'Доцент'
-                elif y.get("Dolzhnost")==3:
-                    self.PPSd = 'Профессор'
-                elif y.get("Dolzhnost")==4:
-                    self.PPSd = 'Зав. кафедрой'
-                if y.get("Stepen")==0:
-                    self.PPSs = ' '
-                elif y.get("Stepen")==1:
-                    self.PPSs = 'Кандидат наук'
-                if y.get("Stepen")==2:
-                    self.PPSs = 'Доктор наук'
-                if y.get("Zvanie")==0:
-                    self.PPSz = ' '
-                elif y.get("Zvanie")==1:
-                    self.PPSz = 'Доцент'
-                elif y.get("Zvanie")==2:
-                    self.PPSz = 'Профессор'
-                self.qboxPPS2 = self.PPSd + ' ' + self.PPSs + ' ' + self.PPSz
-
-
-            for self.table in self.doc.tables:
-                hdr_cells = self.table.rows[0].cells
-                hdr_cells[0].text = '№'
-                hdr_cells[1].text = 'Ф.И.О. преподавателя, реализующего программу '
-                hdr_cells[2].text = 'Условия привлечения (основное место работы: штатный, внутренний совместитель, внешний совместитель по договору ГПХ)'
-                hdr_cells[3].text = 'Должность, ученая степень, ученое звание'
-                hdr_cells[4].text = 'Перечень читаемых дисциплин '
-                hdr_cells[5].text = 'Уровень образования,наименование специальности,направления подготовки,наименование присвоенной квалификации'
-                hdr_cells[6].text = 'Сведения о дополнительном профессиональном образовании '
-                for i in self.DocRecords:
-                    row_cells = self.table.add_row().cells
-                    row_cells[1].text = i.get('FIO')
-                    row_cells[2].text = self.qboxPPS
-                    row_cells[3].text = self.qboxPPS2
-                    row_cells[4].text = i.get('Discipline')
-                    row_cells[5].text = i.get('Napravlenie')
-                    row_cells[6].text = str(i.get('Education'))
-            for self.table in self.doc.tables:
-                for row in self.table.rows:
-                    row_count = len(self.table.rows)
-                    for cell in row.cells:
-                        for paragraph in cell.paragraphs:
-                            for self.op in range(0, row_count-1):
-                                firstC = self.table.cell(self.op, 1).text
-                                self.op=self.op+1
-                                secondC = self.table.cell(self.op, 1).text
-                                if firstC == secondC:
-                                    thirdC = self.table.cell(self.op, 1).text
-                                    self.table.cell(self.op, 1).text = ""
-                                    self.table.cell(self.op, 1).merge(self.table.cell(self.op-1, 1))
-                                    self.table.cell(self.op, 1).text = thirdC
-
-                                    thirdC0 = self.table.cell(self.op, 0).text
-                                    self.table.cell(self.op, 0).text = ""
-                                    self.table.cell(self.op, 0).merge(self.table.cell(self.op-1, 0))
-                                    self.table.cell(self.op, 0).text = thirdC0
-
-                                    thirdC2 = self.table.cell(self.op, 2).text
-                                    self.table.cell(self.op, 2).text = ""
-                                    self.table.cell(self.op, 2).merge(self.table.cell(self.op-1, 2))
-                                    self.table.cell(self.op, 2).text = thirdC2
-
-                                    thirdC3 = self.table.cell(self.op, 3).text
-                                    self.table.cell(self.op, 3).text = ""
-                                    self.table.cell(self.op, 3).merge(self.table.cell(self.op-1, 3))
-                                    self.table.cell(self.op, 3).text = thirdC3
-                                    
-                                    thirdC5 = self.table.cell(self.op,5).text
-                                    self.table.cell(self.op, 5).text = ""
-                                    self.table.cell(self.op, 5).merge(self.table.cell(self.op-1, 5))
-                                    self.table.cell(self.op, 5).text = thirdC5
-                                    
-                                    thirdC6 = self.table.cell(self.op, 6).text
-                                    self.table.cell(self.op, 6).text = ""
-                                    self.table.cell(self.op, 6).merge(self.table.cell(self.op-1, 6))
-                                    self.table.cell(self.op, 6).text = thirdC6
-
-                self.filename=QtWidgets.QFileDialog.getSaveFileName(self, "Выберите файл", os.getcwd(), ".DOCX Файлы (*.docx)")
-                directory=str(self.filename)
-                cleanDirectory=""
-                counter=0
-                for i  in range(2,len(directory)):
-                    if directory[i]=="\'":
-                        counter+=1
-                    if counter<1:
-                        cleanDirectory=cleanDirectory+directory[i]
-                self.doc.save(cleanDirectory)
+            self.filename=QtWidgets.QFileDialog.getSaveFileName(self, "Выберите файл", os.getcwd(), ".DOCX Файлы (*.docx)")
+            directory=str(self.filename)
+            cleanDirectory=""
+            counter=0
+            for i  in range(2,len(directory)):
+                if directory[i]=="\'":
+                    counter+=1
+                if counter<1:
+                    cleanDirectory=cleanDirectory+directory[i]
+            self.doc.save(cleanDirectory)
 
 
 
