@@ -33,12 +33,9 @@ from SaveAndLoad import PPSreadCSV
 from SaveAndLoad import AUDreadCSV
 from SaveAndLoad import UPreadCSV
 from SaveAndLoad import TeacherreadCSV
-from SaveAndLoad import readMTODisc
-from SaveAndLoad import readMTOAUD
-from SaveAndLoad import matchingMTO
-from SaveAndLoad import readKODisc
-from SaveAndLoad import readKOTeacher
-from SaveAndLoad import matchingKO
+from SaveAndLoad import MTORead """!!!"""
+from SaveAndLoad import KORead  """!!!"""
+
 
 
 #Импорт функций генерации документов
@@ -704,6 +701,7 @@ class MainAppWindow(QtWidgets.QMainWindow):
         self.ui=Ui_MainWindow()
         self.Document=-1
         self.DocRecords=[]
+        self.TeacherDict={}
         self.ui.setupUi(self)
         self.setWindowTitle("Приложение для генерации справок")
         #self.ui.tb_AvailAud.setVisible(False)
@@ -757,16 +755,16 @@ class MainAppWindow(QtWidgets.QMainWindow):
                                     self.table.cell(self.op, 1).text = ""
                                     self.table.cell(self.op, 1).merge(self.table.cell(self.op-1, 1))
                                     self.table.cell(self.op, 1).text = thirdC
-                self.filename=QtWidgets.QFileDialog.getSaveFileName(self, "Выберите файл", os.getcwd(), ".DOCX Файлы (*.docx)")
-                directory=str(self.filename)
-                cleanDirectory=""
-                counter=0
-                for i  in range(2,len(directory)):
-                    if directory[i]=="\'":
-                        counter+=1
-                    if counter<1:
-                        cleanDirectory=cleanDirectory+directory[i]
-                self.doc.save(cleanDirectory)
+            self.filename=QtWidgets.QFileDialog.getSaveFileName(self, "Выберите файл", os.getcwd(), ".DOCX Файлы (*.docx)")
+            directory=str(self.filename)
+            cleanDirectory=""
+            counter=0
+            for i  in range(2,len(directory)):
+                if directory[i]=="\'":
+                    counter+=1
+                if counter<1:
+                    cleanDirectory=cleanDirectory+directory[i]
+            self.doc.save(cleanDirectory)
 
 
             
@@ -887,6 +885,25 @@ class MainAppWindow(QtWidgets.QMainWindow):
                         cleanDirectory=cleanDirectory+directory[i]
                 self.doc.save(cleanDirectory)
 
+    def findDiscForTeacher(self):
+        Disc=[]
+        Teeaachers=TeacherreadCSV("PPSDB.csv")
+        Recordsss=UPreadCSV("UPDB.csv")
+        for Teach in Teeaachers:
+            for i in Recordsss:
+                temp = re.findall(r'([А-я]+\ [А-я]+\ [А-я]+)',i.get("Teacher"))
+                res = list(map(str, temp))
+                for k in res:
+                    if Teach==k:
+                        Disc.append(i.get("NameUD"))
+            self.TeacherDict[Teach]=Disc
+            Disc=[]
+        return self.TeacherDict
+            
+        
+                
+
+        
 
 
     def MTOChosen(self):

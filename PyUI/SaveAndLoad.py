@@ -63,78 +63,47 @@ def TeacherreadCSV(Filename):
     return datas
 
 
-def readMTODisc(Filename1):
-    datas=[]
-    record={}
-    with open(Filename1, "r", newline="") as file:
-        csv_dict = [row for row in csv.reader(Filename1)]
-        if len(csv_dict) != 0:
-            reader = csv.reader(file)
-            for row in reader:
-                if row:
-                    record={'Discipline':row[0], 'AudienceName':row[3]}
-                    datas.append(record)
-    return datas
-
-def readMTOAUD(Filename):
-    record={}        
-    datas=[]
-    with open(Filename, "r", newline="") as file:
-        csv_dict = [row for row in csv.reader(Filename)]
-        if len(csv_dict) != 0:
-            reader = csv.reader(file)
-            for row in reader:
-                if row:
-                    record={'AudienceName': row[0], 'AudiencePO' :row[1] , 'AudienceTO':row[2], 'AudienceNaimenovanie' : row[3]}
-                    datas.append(record)
-    return datas
+def KORead(Filename,Records):
+    datas=PPSreadCSV(Filename)
+    for i in Records:
+        for k in datas:
+            if i.get("FIO")==k.get('FIO'):
+                i.update(k)
+    return Records
 
 
-def matchingMTO(data1,data2):
-    result=[]
-    for data in data1:
-        for dat in data2:
-            if data.get("AudienceName")==dat.get("AudienceName"):
-                data.update(dat)
-                del data["AudienceName"]
-                result.append(data)
-    return result
+def findDiscForTeacher():
+        Records=[]
+        TeacherDict={}
+        Disc=[]
+        Teeaachers=TeacherreadCSV("PPSDB.csv")
+        Recordsss=UPreadCSV("UPDB.csv")
+        for Teach in Teeaachers:
+            for i in Recordsss:
+                temp = re.findall(r'([А-я]+\ [А-я]+\ [А-я]+)',i.get("Teacher"))
+                res = list(map(str, temp))
+                for k in res:
+                    if Teach==k:
+                        Disc.append(i.get("NameUD"))
+            TeacherDict={"FIO":Teach,"Disc":Disc}
+            Disc=[]
+            Records.append(TeacherDict)
+        return Records
 
 
-def readKODisc(Filename1):
-    datas=[]
-    record={}
-    with open(Filename1, "r", newline="") as file:
-        csv_dict = [row for row in csv.reader(Filename1)]
-        if len(csv_dict) != 0:
-            reader = csv.reader(file)
-            for row in reader:
-                if row:
-                    record={'Discipline':row[0], 'FIO':row[2]}
-                    datas.append(record)
-    return datas
-
-def readKOTeacher(Filename):
-    record={}        
-    datas=[]
-    with open(Filename, "r", newline="") as file:
-        csv_dict = [row for row in csv.reader(Filename)]
-        if len(csv_dict) != 0:
-            reader = csv.reader(file)
-            for row in reader:
-                if row:
-                    temp = re.findall(r'\d+', row[1])
-                    res = list(map(int, temp))
-                    record={'FIO': row[0],'Uslovia': res, "Dolzhnost": int(row[2]), "Stepen": int(row[3]), "Zvanie": int(row[4]), 'Napravlenie': row[5], 'Education' : row[6] }
-                    datas.append(record)
+def MTORead(Filename):
+    Records=UPreadCSV("UPDB.csv")
+    datas=AUDreadCSV(Filename)
+    for i in datas:
+        for rec in Records:
+            temp = re.findall(r'([А-я]+\-\d\d\d)',rec.get("Audience"))
+            res = list(map(str, temp))
+            for j in res:
+                if i.get("AudienceName")==j:
+                    i.update({"Discipline":rec.get("NameUD")})
     return datas
 
 
-def matchingKO(data1,data2):
-    result=[]
-    for data in data1:
-        for dat in data2:
-            if data.get("FIO")==dat.get("FIO"):
-                data.update(dat)
-                result.append(data)
-    return result
+
+        
+
