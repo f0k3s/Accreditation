@@ -128,7 +128,7 @@ class AudienceEditorWindow(QtWidgets.QMainWindow):
             self.tableRecords()
 
 
-
+    #Выод записи в таблицу
     def tableRecords(self):
         self.records=AUDreadCSV("AUDDB.csv")
         if self.records:
@@ -143,7 +143,7 @@ class AudienceEditorWindow(QtWidgets.QMainWindow):
                 self.ui.tb_Audience.setItem(self.rowCount, 3, QtWidgets.QTableWidgetItem(self.records[self.rowCount].get('AudiencePO')))
         
 
-        
+    #Удаление записи
     def delRecord(self):
         if len(self.records)!=0:
             self.ui.tb_Audience.removeRow(self.ui.tb_Audience.currentRow())
@@ -151,13 +151,14 @@ class AudienceEditorWindow(QtWidgets.QMainWindow):
             self.records.pop(self.row)
             writeCSV("AUDDB.csv",self.records)
         
+    #Редактирование записи    
     def editRecord(self):
         self.ui.pb_Save.setEnabled(True)
         self.ui.pb_Add.setEnabled(False)
         self.ui.pb_Delete.setEnabled(False)
         self.ui.pb_Edit.setEnabled(False)
         
-
+    #Сохранение изменений в записи
     def saveRecord(self):
         self.delRecord()
         self.addRecord()
@@ -166,6 +167,7 @@ class AudienceEditorWindow(QtWidgets.QMainWindow):
         self.ui.pb_Add.setEnabled(True)
         self.ui.pb_Edit.setEnabled(True)
 
+    #Вывод значений в поля заполнения по клику
     def ShowRecord(self,row,column):
         self.ui.le_AudienceName.setText(self.records[row].get("AudienceName"))
         self.ui.tE_AudienceTO.setPlainText(self.records[row].get("AudienceTO"))
