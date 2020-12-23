@@ -726,13 +726,13 @@ class MainAppWindow(QtWidgets.QMainWindow):
                 hdr_cells[2].text = 'Наименование специальных помещений и помещений для самостоятельной работы'
                 hdr_cells[3].text = 'Оснащенность специальных помещений и помещений для самостоятельной работы'
                 hdr_cells[4].text = 'Перечень лицензионного программного обеспечения. Реквизиты подтверждающего документа'
-                print(self.DocRecords)
-                for i in self.DocRecords:
+                print(isinstance(self.DocRecords,list))
+                for i in list(self.DocRecords):
                     row_cells = self.table.add_row().cells
-                    row_cells[1].text = i.get('Discipline')
-                    row_cells[2].text = i.get('AudiencePO')
+                    row_cells[1].text = str(i.get('Discipline'))
+                    row_cells[2].text = i.get('AudienceNaimenovanie')
                     row_cells[3].text = i.get('AudienceTO')
-                    row_cells[4].text = i.get('AudienceNaimenovanie')
+                    row_cells[4].text = i.get('AudiencePO')
             for self.table in self.doc.tables:
                 for row in self.table.rows:
                     row_count = len(self.table.rows)
