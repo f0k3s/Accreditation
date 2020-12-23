@@ -85,7 +85,7 @@ class AudienceEditorWindow(QtWidgets.QMainWindow):
         self.ui.pb_Edit.clicked.connect(self.editRecord)
         self.ui.pb_Save.setEnabled(False)
 
-        self.ui.tb_Audience.currentCellChanged.connect(self.ShowRecord)
+        self.ui.tb_Audience.cellClicked.connect(self.ShowRecord)
         #if self.ui.tb_Audience.cellClicked(self.ui.tb_Audience.currentRow(), self.ui.tb_Audience.currentColumn()):
             #self.ui.pb_Edit.setEnabled(True)
         #else:
@@ -107,19 +107,7 @@ class AudienceEditorWindow(QtWidgets.QMainWindow):
         self.AudPO=self.ui.tE_PO.toPlainText()
 
         if (self.AudValid.AudNameValid(self.AudName))==True:
-            if (self.AudValid.AudNaimenValid(self.AudNaim))==True:
-                if (self.AudValid.AudTOValid(self.AudTO))==True:
-                    if (self.AudValid.AudPOValid(self.AudPO))==True:
-                        return True
-                    else:
-                        self.APDialogUi.show()
-                        return False
-                else:
-                     self.ATDialogUi.show()
-                     return False
-            else:
-                self.ANMDialogUi.show()
-                return False
+            return True
         else:
             self.ANDialogUi.show()
             return False
@@ -128,11 +116,11 @@ class AudienceEditorWindow(QtWidgets.QMainWindow):
     #Добавить запись
     def addRecord(self):
         if self.validation()==True:
-            self.xName = str(self.ui.le_AudienceName.text())
-            self.yName = str(self.ui.tE_AudienceTO.toPlainText())
-            self.wName = str(self.ui.tE_Naimen.toPlainText())
-            self.zName = str(self.ui.tE_PO.toPlainText())
-            self.record = {'AudienceName': self.xName, 'AudiencePO' : self.yName, 'AudienceTO': self.wName, 'AudienceNaimenovanie' : self.zName }
+            self.AudName = str(self.ui.le_AudienceName.text())
+            self.AudTO = str(self.ui.tE_AudienceTO.toPlainText())
+            self.AudNaim = str(self.ui.tE_Naimen.toPlainText())
+            self.AudPO = str(self.ui.tE_PO.toPlainText())
+            self.record = {'AudienceName': self.AudName, 'AudiencePO' : self.AudPO, 'AudienceTO': self.AudTO, 'AudienceNaimenovanie' : self.AudNaim }
             self.records.append(self.record)
             if len(self.records)>1:
                 SelSortAud(self.records)
@@ -153,15 +141,15 @@ class AudienceEditorWindow(QtWidgets.QMainWindow):
                 self.ui.tb_Audience.setItem(self.rowCount, 1, QtWidgets.QTableWidgetItem(self.records[self.rowCount].get('AudienceNaimenovanie')))
                 self.ui.tb_Audience.setItem(self.rowCount, 2, QtWidgets.QTableWidgetItem(self.records[self.rowCount].get('AudienceTO')))
                 self.ui.tb_Audience.setItem(self.rowCount, 3, QtWidgets.QTableWidgetItem(self.records[self.rowCount].get('AudiencePO')))
-        self.ui.tb_Audience.setCurrentCell(0,0)
+        
 
         
     def delRecord(self):
-        self.ui.tb_Audience.removeRow(self.ui.tb_Audience.currentRow())
-        self.row=self.ui.tb_Audience.currentRow()  
-        self.ui.tb_Audience.setCurrentCell(self.row-1,0)
-        self.records.pop(self.row)
-        writeCSV("AUDDB.csv",self.records)
+        if len(self.records)!=0:
+            self.ui.tb_Audience.removeRow(self.ui.tb_Audience.currentRow())
+            self.row=self.ui.tb_Audience.currentRow()  
+            self.records.pop(self.row)
+            writeCSV("AUDDB.csv",self.records)
         
     def editRecord(self):
         self.ui.pb_Save.setEnabled(True)
@@ -292,14 +280,14 @@ class KOEditorWindow(QtWidgets.QMainWindow):
                 self.ui.tb_KO.setItem(self.rowCount, 4, QtWidgets.QTableWidgetItem(self.ui.cb_zvan.itemText(self.records[self.rowCount].get("Zvanie"))))
                 self.ui.tb_KO.setItem(self.rowCount, 5, QtWidgets.QTableWidgetItem(self.records[self.rowCount].get('Napravlenie')))
                 self.ui.tb_KO.setItem(self.rowCount, 6, QtWidgets.QTableWidgetItem(self.records[self.rowCount].get('Education')))
-            self.ui.tb_KO.setCurrentCell(0,0)
 
 
     def delRecord(self):
-        self.ui.tb_KO.removeRow(self.ui.tb_KO.currentRow())
-        self.row=self.ui.tb_KO.currentRow()
-        self.records.pop(self.row)
-        writeCSV("PPSDB.csv",self.records)
+        if len(self.records)!=0:
+            self.ui.tb_KO.removeRow(self.ui.tb_KO.currentRow())
+            self.row=self.ui.tb_KO.currentRow()
+            self.records.pop(self.row)
+            writeCSV("PPSDB.csv",self.records)
         
     def editRecord(self):
         self.ui.pb_Save.setEnabled(True)
@@ -584,10 +572,10 @@ class UPEditorWindow(QtWidgets.QMainWindow):
         
 
     def delRecord(self):
-        self.records.pop(self.ui.list_Disc.currentRow())
-        print(self.records)
-        writeCSV("UPDB.csv",self.records)
-        self.tableRecords()
+        if len(self.records)!=0:
+            self.records.pop(self.ui.list_Disc.currentRow())
+            writeCSV("UPDB.csv",self.records)
+            self.tableRecords()
 
         
         
@@ -736,6 +724,7 @@ class MainAppWindow(QtWidgets.QMainWindow):
                 hdr_cells[2].text = 'Наименование специальных помещений и помещений для самостоятельной работы'
                 hdr_cells[3].text = 'Оснащенность специальных помещений и помещений для самостоятельной работы'
                 hdr_cells[4].text = 'Перечень лицензионного программного обеспечения. Реквизиты подтверждающего документа'
+                print(self.DocRecords)
                 for i in self.DocRecords:
                     row_cells = self.table.add_row().cells
                     row_cells[1].text = i.get('Discipline')
