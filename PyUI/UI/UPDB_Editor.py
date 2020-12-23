@@ -673,3 +673,61 @@ class Ui_UPEditor(object):
         self.label_52.setText(_translate("UPEditor", "0"))
         self.label_53.setText(_translate("UPEditor", "0"))
         self.label_54.setText(_translate("UPEditor", "0"))
+
+
+class NameUDDialog(QtWidgets.QDialog):
+    def setupUi(self,Dialog):
+        
+        self.verticalLayout = QtWidgets.QVBoxLayout(self)
+        self.verticalLayout.setObjectName("verticalLayout")
+        self.label=QtWidgets.QLabel(self)
+        self.label.setObjectName("label")
+        self.label.setText("Неверно введено наименование УД")
+        self.verticalLayout.addWidget(self.label)
+        self.pushButton = QtWidgets.QPushButton(self)
+        self.pushButton.setObjectName("pushButton")
+        self.pushButton.clicked.connect(self.btnClosed)
+        self.verticalLayout.addWidget(self.pushButton)
+        self.setWindowTitle("Ошибка!")
+        self.pushButton.setText("Понимаю")
+
+    def btnClosed(self):
+        self.close()
+
+class NumberUDDialog(QtWidgets.QDialog):
+    def setupUi(self,Dialog):
+        
+        self.verticalLayout = QtWidgets.QVBoxLayout(self)
+        self.verticalLayout.setObjectName("verticalLayout")
+        self.label=QtWidgets.QLabel(self)
+        self.label.setObjectName("label")
+        self.label.setText("Неверно введен номер УД")
+        self.verticalLayout.addWidget(self.label)
+        self.pushButton = QtWidgets.QPushButton(self)
+        self.pushButton.setObjectName("pushButton")
+        self.pushButton.clicked.connect(self.btnClosed)
+        self.verticalLayout.addWidget(self.pushButton)
+        self.setWindowTitle("Ошибка!")
+        self.pushButton.setText("Понимаю")
+
+    def btnClosed(self):
+        self.close()
+
+class AudDialog(QtWidgets.QDialog):
+    def setupUi(self,Dialog):
+        
+        self.verticalLayout = QtWidgets.QVBoxLayout(self)
+        self.verticalLayout.setObjectName("verticalLayout")
+        self.label=QtWidgets.QLabel(self)
+        self.label.setObjectName("label")
+        self.label.setText("Выберите хотя бы одну аудиторию")
+        self.verticalLayout.addWidget(self.label)
+        self.pushButton = QtWidgets.QPushButton(self)
+        self.pushButton.setObjectName("pushButton")
+        self.pushButton.clicked.connect(self.btnClosed)
+        self.verticalLayout.addWidget(self.pushButton)
+        self.setWindowTitle("Ошибка!")
+        self.pushButton.setText("Понимаю")
+
+    def btnClosed(self):
+        self.close()

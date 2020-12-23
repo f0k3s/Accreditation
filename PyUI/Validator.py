@@ -1,5 +1,6 @@
+"""!!!Файл валидатора!!!"""
 import re
-
+#Класс валидатора аудиторий
 class AudienceValidator:
 
     def __init__(self):
@@ -34,7 +35,7 @@ class AudienceValidator:
         return Truth
 
 
-
+#Класс валидатора КО
 class PPSValidator:
 
     def __init__(self):
@@ -60,7 +61,7 @@ class PPSValidator:
         if re.fullmatch(RegExp,Education)!=None:
             Truth=True
         return Truth
-
+#Класс валидатора УП
 class UPValidator:
     def __init__(self):
         pass

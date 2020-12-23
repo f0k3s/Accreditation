@@ -1,14 +1,16 @@
+"""!!!Файл с функциями БД!!!"""
+
 import csv
 import re
 import os
-
+#Запись в файл
 def writeCSV(Filename, data):
     with open(Filename, "w+",encoding='cp1251', newline="") as File:
         for i in data: 
             writer=csv.writer(File)
             writer.writerow(i.values())
     File.close()
-
+#чтение данных МТО
 def AUDreadCSV(Filename):
     with open(Filename, "r", newline="") as file:
         datas=[]
@@ -22,7 +24,7 @@ def AUDreadCSV(Filename):
     return datas
 
 
-
+#Чтение данных КО
 def PPSreadCSV(Filename):
     with open(Filename, "r", newline="") as file:
         datas=[]
@@ -37,7 +39,7 @@ def PPSreadCSV(Filename):
                     datas.append(record)
     return datas
 
-
+#Чтение данных УП
 def UPreadCSV(Filename):
     with open(Filename, "r", newline="") as file:
         datas=[]
@@ -50,7 +52,7 @@ def UPreadCSV(Filename):
                     datas.append(record)
     return datas
 
-
+#Вспомогательная функция для чтения первой строки в БД
 def TeacherreadCSV(Filename):
     with open(Filename, "r", newline="") as file:
         datas=[]
@@ -62,7 +64,7 @@ def TeacherreadCSV(Filename):
                     datas.append(row[0])
     return datas
 
-
+#Функция, соединяющая БД УП и БД КО
 def KORead(Filename,Records):
     datas=PPSreadCSV(Filename)
     for i in Records:
@@ -71,7 +73,7 @@ def KORead(Filename,Records):
                 i.update(k)
     return Records
 
-
+#Вспомогательная функция для создания соотношения Преподаватель - Дисциплины
 def findDiscForTeacher():
         Records=[]
         TeacherDict={}
@@ -90,8 +92,9 @@ def findDiscForTeacher():
             Records.append(TeacherDict)
         return Records
 
-
+#Соединение БД УП и БД МТО
 def MTORead(Filename):
+    boba=[]
     Records=UPreadCSV("UPDB.csv")
     datas=AUDreadCSV(Filename)
     for i in datas:
@@ -101,7 +104,10 @@ def MTORead(Filename):
             for j in res:
                 if i.get("AudienceName")==j:
                     i.update({"Discipline":rec.get("NameUD")})
-    return datas
+    for i in datas:
+        if "Discipline" in i.keys():
+            boba.append(i)
+    return boba
 
 
 

@@ -176,6 +176,9 @@ class Ui_MainWindow(object):
         self.menuBar.addAction(self.menu_4.menuAction())
         self.menuBar.addAction(self.menu_5.menuAction())
         self.menuBar.addAction(self.menu_6.menuAction())
+        self.Help = QtWidgets.QAction(MainWindow)
+        self.Help.setObjectName("Help")
+        self.menu_6.addAction(self.Help)
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -183,6 +186,7 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "QtGui"))
+        self.Help.setText(_translate("MainWindow","Справка"))
         item = self.tb_ChosenTeacher.horizontalHeaderItem(0)
         item.setText(_translate("MainWindow", "ФИО"))
         item = self.tb_ChosenTeacher.horizontalHeaderItem(1)
@@ -256,3 +260,21 @@ class Ui_MainWindow(object):
         self.action_CheckPercent.setText(_translate("MainWindow", "Проверка %"))
         self.action_Audience.setText(_translate("MainWindow", "Справочник аудиторий"))
 
+class HelpDialog(QtWidgets.QDialog):
+    def setupUi(self,Dialog):
+        
+        self.verticalLayout = QtWidgets.QVBoxLayout(self)
+        self.verticalLayout.setObjectName("verticalLayout")
+        self.label=QtWidgets.QLabel(self)
+        self.label.setObjectName("label")
+        self.label.setText('В данной версии программы можно редактировать такие справочники, как УП, КО, МТО \nДля создания справки наведите в верхней панели на меню "Шаблон",\nзатем выберите интересуюущий вас вид справки и нажмите на кнопку на главном окне "Сохранить"')
+        self.verticalLayout.addWidget(self.label)
+        self.pushButton = QtWidgets.QPushButton(self)
+        self.pushButton.setObjectName("pushButton")
+        self.pushButton.clicked.connect(self.btnClosed)
+        self.verticalLayout.addWidget(self.pushButton)
+        self.setWindowTitle("Справка")
+        self.pushButton.setText("Понимаю")
+
+    def btnClosed(self):
+        self.close()

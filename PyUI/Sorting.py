@@ -1,3 +1,5 @@
+"""!!!Файл с сортировками записей!!!"""
+#Сортировка аудиторий
 def SelSortAud(array):
     n=len(array)
     for i in range(0,n-1):
@@ -20,7 +22,7 @@ def SelSortAud(array):
         array[i],array[a]=array[a],array[i]
     return array
 
-
+#Сортировка КО
 def SelSortPPS(array):
     n=len(array)
     for i in range(0,n-1):
