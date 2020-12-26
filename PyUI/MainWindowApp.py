@@ -142,8 +142,8 @@ class AudienceEditorWindow(QtWidgets.QMainWindow):
     #Удаление записи
     def delRecord(self):
         if len(self.records)!=0:
-            self.ui.tb_Audience.removeRow(self.ui.tb_Audience.currentRow())
             self.row=self.ui.tb_Audience.currentRow()  
+            self.ui.tb_Audience.removeRow(self.ui.tb_Audience.currentRow())
             self.records.pop(self.row)
             writeCSV("AUDDB.csv",self.records)
         
@@ -165,6 +165,7 @@ class AudienceEditorWindow(QtWidgets.QMainWindow):
 
     #Вывод значений в поля заполнения по клику
     def ShowRecord(self,row,column):
+        self.index=row
         self.ui.le_AudienceName.setText(self.records[row].get("AudienceName"))
         self.ui.tE_AudienceTO.setPlainText(self.records[row].get("AudienceTO"))
         self.ui.tE_Naimen.setPlainText(self.records[row].get("AudienceNaimenovanie"))
@@ -189,7 +190,7 @@ class KOEditorWindow(QtWidgets.QMainWindow):
         self.ui.pb_Add.clicked.connect(self.addRecord)
         self.ui.pb_Delete.clicked.connect(self.delRecord)
         self.ui.pb_Edit.clicked.connect(self.editRecord)
-        self.ui.tb_KO.currentCellChanged.connect(self.ShowRecord)
+        self.ui.tb_KO.cellClicked.connect(self.ShowRecord)
         self.ui.pb_Save.setEnabled(False)
 
         self.FIODialogUi=FIODialog()
@@ -273,8 +274,8 @@ class KOEditorWindow(QtWidgets.QMainWindow):
     #Функция удаления записи
     def delRecord(self):
         if len(self.records)!=0:
-            self.ui.tb_KO.removeRow(self.ui.tb_KO.currentRow())
             self.row=self.ui.tb_KO.currentRow()
+            self.ui.tb_KO.removeRow(self.ui.tb_KO.currentRow())
             self.records.pop(self.row)
             writeCSV("PPSDB.csv",self.records)
     #Функция редактирования записи
