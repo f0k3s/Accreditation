@@ -11,6 +11,7 @@ import time
 import docx
 import pandas as pd
 import numpy as np
+from docx2pdf import convert
 from docx.shared import Pt
 from docx.shared import Inches
 #from docx.enum.text import WD_ALIGN_PARAGRAPH
@@ -122,6 +123,7 @@ class AudienceEditorWindow(QtWidgets.QMainWindow):
                 SelSortAud(self.records)
             writeCSV("AUDDB.csv",self.records)
             self.tableRecords()
+            self.ui.tb_Audience.selectRow(0)
 
 
     #Выод записи в таблицу
@@ -146,6 +148,7 @@ class AudienceEditorWindow(QtWidgets.QMainWindow):
             self.ui.tb_Audience.removeRow(self.ui.tb_Audience.currentRow())
             self.records.pop(self.row)
             writeCSV("AUDDB.csv",self.records)
+            self.ui.tb_Audience.selectRow(0)
         
     #Редактирование записи    
     def editRecord(self):
@@ -153,6 +156,7 @@ class AudienceEditorWindow(QtWidgets.QMainWindow):
         self.ui.pb_Add.setEnabled(False)
         self.ui.pb_Delete.setEnabled(False)
         self.ui.pb_Edit.setEnabled(False)
+        
         
     #Сохранение изменений в записи
     def saveRecord(self):
@@ -162,6 +166,7 @@ class AudienceEditorWindow(QtWidgets.QMainWindow):
         self.ui.pb_Delete.setEnabled(True)
         self.ui.pb_Add.setEnabled(True)
         self.ui.pb_Edit.setEnabled(True)
+        self.ui.tb_Audience.selectRow(0)
 
     #Вывод значений в поля заполнения по клику
     def ShowRecord(self,row,column):
@@ -278,6 +283,7 @@ class KOEditorWindow(QtWidgets.QMainWindow):
             self.ui.tb_KO.removeRow(self.ui.tb_KO.currentRow())
             self.records.pop(self.row)
             writeCSV("PPSDB.csv",self.records)
+            self.ui.tb_KO.selectRow(0)
     #Функция редактирования записи
     def editRecord(self):
         self.ui.pb_Save.setEnabled(True)
@@ -293,6 +299,7 @@ class KOEditorWindow(QtWidgets.QMainWindow):
         self.ui.pb_Delete.setEnabled(True)
         self.ui.pb_Add.setEnabled(True)
         self.ui.pb_Edit.setEnabled(True)
+        self.ui.tb_KO.selectRow(0)
     #Функция вывода данных в поля заполнения
     def ShowRecord(self,row,column):
         self.ui.le_FIO.setText(self.records[row].get("FIO"))
@@ -572,6 +579,7 @@ class UPEditorWindow(QtWidgets.QMainWindow):
         if self.records:
             for rec in self.records:
                 self.ui.list_Disc.addItem(rec.get("NameUD"))
+        self.ui.list_Disc.setCurrentRow(0)
         
     #функция удаления
     def delRecord(self):
@@ -579,6 +587,7 @@ class UPEditorWindow(QtWidgets.QMainWindow):
             self.records.pop(self.ui.list_Disc.currentRow())
             writeCSV("UPDB.csv",self.records)
             self.tableRecords()
+        self.ui.list_Disc.setCurrentRow(0)
 
         
     #Функция редактирования
@@ -596,6 +605,7 @@ class UPEditorWindow(QtWidgets.QMainWindow):
         self.ui.pb_Delete.setEnabled(True)
         self.ui.pb_Add.setEnabled(True)
         self.ui.pb_Edit.setEnabled(True)
+        self.ui.list_Disc.setCurrentRow(0)
 
     #Функция вывода записи в поля 
     def ShowRecord(self):
@@ -862,7 +872,17 @@ class MainAppWindow(QtWidgets.QMainWindow):
                                     self.table.cell(self.op, 6).text = ""
                                     self.table.cell(self.op, 6).merge(self.table.cell(self.op-1, 6))
                                     self.table.cell(self.op, 6).text = thirdC6
-
+            #func PepeFrog - with bug, conflict with meeeeeeerge :(
+            #self.num = 1
+            #numPepe=1
+            #for self.table in self.doc.tables:
+             #   for row in self.table.rows:
+              #      rowPepe = len(self.table.rows)
+               #     for cell in row.cells:
+                #        for paragraph in cell.paragraphs:
+                 #           for numPepe in range(numPepe, rowPepe):
+                  #              self.table.cell(numPepe, 0).text = str(self.num)
+                   #             self.num = self.num + 1
                 self.filename=QtWidgets.QFileDialog.getSaveFileName(self, "Выберите файл", os.getcwd(), ".DOCX Файлы (*.docx)")
                 directory=str(self.filename)
                 cleanDirectory=""
@@ -873,7 +893,6 @@ class MainAppWindow(QtWidgets.QMainWindow):
                     if counter<1:
                         cleanDirectory=cleanDirectory+directory[i]
                 self.doc.save(cleanDirectory)
-
             
     def MTOChosen(self):
         self.Document=1
