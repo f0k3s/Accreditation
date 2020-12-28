@@ -79,6 +79,8 @@ class AudienceEditorWindow(QtWidgets.QMainWindow):
         self.ui.setupUi(self)
 
         self.tableRecords()
+        if len(self.records)>0:
+            self.ui.tb_Audience.selectRow(0)
         self.ui.pb_Save.clicked.connect(self.saveRecord)
         self.ui.pb_Add.clicked.connect(self.addRecord)
         self.ui.pb_Delete.clicked.connect(self.delRecord)
@@ -124,6 +126,10 @@ class AudienceEditorWindow(QtWidgets.QMainWindow):
             writeCSV("AUDDB.csv",self.records)
             self.tableRecords()
             self.ui.tb_Audience.selectRow(0)
+            self.ui.le_AudienceName.setText("")
+            self.ui.tE_AudienceTO.setPlainText("")
+            self.ui.tE_Naimen.setPlainText("")
+            self.ui.tE_PO.setPlainText("")
 
 
     #Выод записи в таблицу
@@ -139,6 +145,7 @@ class AudienceEditorWindow(QtWidgets.QMainWindow):
                 self.ui.tb_Audience.setItem(self.rowCount, 1, QtWidgets.QTableWidgetItem(self.records[self.rowCount].get('AudienceNaimenovanie')))
                 self.ui.tb_Audience.setItem(self.rowCount, 2, QtWidgets.QTableWidgetItem(self.records[self.rowCount].get('AudienceTO')))
                 self.ui.tb_Audience.setItem(self.rowCount, 3, QtWidgets.QTableWidgetItem(self.records[self.rowCount].get('AudiencePO')))
+        self.ui.tb_Audience.selectRow(0)
         
 
     #Удаление записи
@@ -148,7 +155,12 @@ class AudienceEditorWindow(QtWidgets.QMainWindow):
             self.ui.tb_Audience.removeRow(self.ui.tb_Audience.currentRow())
             self.records.pop(self.row)
             writeCSV("AUDDB.csv",self.records)
-            self.ui.tb_Audience.selectRow(0)
+            if len(self.records)>0:
+                self.ui.tb_Audience.selectRow(0)
+            self.ui.le_AudienceName.setText("")
+            self.ui.tE_AudienceTO.setPlainText("")
+            self.ui.tE_Naimen.setPlainText("")
+            self.ui.tE_PO.setPlainText("")
         
     #Редактирование записи    
     def editRecord(self):
@@ -191,6 +203,8 @@ class KOEditorWindow(QtWidgets.QMainWindow):
         self.ui.setupUi(self)
         
         self.tableRecords()
+        if len(self.records)>0:
+            self.ui.tb_KO.selectRow(0)
         self.ui.pb_Save.clicked.connect(self.saveRecord)
         self.ui.pb_Add.clicked.connect(self.addRecord)
         self.ui.pb_Delete.clicked.connect(self.delRecord)
@@ -275,6 +289,16 @@ class KOEditorWindow(QtWidgets.QMainWindow):
                 self.ui.tb_KO.setItem(self.rowCount, 4, QtWidgets.QTableWidgetItem(self.ui.cb_zvan.itemText(self.records[self.rowCount].get("Zvanie"))))
                 self.ui.tb_KO.setItem(self.rowCount, 5, QtWidgets.QTableWidgetItem(self.records[self.rowCount].get('Napravlenie')))
                 self.ui.tb_KO.setItem(self.rowCount, 6, QtWidgets.QTableWidgetItem(self.records[self.rowCount].get('Education')))
+        self.ui.tb_KO.selectRow(0)
+        self.ui.le_FIO.setText("")
+        self.ui.chB_State.setChecked(False)
+        self.ui.chB_Inner.setChecked(False)
+        self.ui.chB_Deal.setChecked(False)
+        self.ui.cb_Dolzh.setCurrentIndex(0)
+        self.ui.cb_Stepen.setCurrentIndex(0)
+        self.ui.cb_zvan.setCurrentIndex(0)
+        self.ui.tE_NaprPodgotov.setPlainText("")
+        self.ui.tE_Education.setPlainText("")
 
     #Функция удаления записи
     def delRecord(self):
@@ -283,7 +307,17 @@ class KOEditorWindow(QtWidgets.QMainWindow):
             self.ui.tb_KO.removeRow(self.ui.tb_KO.currentRow())
             self.records.pop(self.row)
             writeCSV("PPSDB.csv",self.records)
-            self.ui.tb_KO.selectRow(0)
+            if len(self.records)>0:
+                self.ui.tb_KO.selectRow(0)
+            self.ui.le_FIO.setText("")
+            self.ui.chB_State.setChecked(False)
+            self.ui.chB_Inner.setChecked(False)
+            self.ui.chB_Deal.setChecked(False)
+            self.ui.cb_Dolzh.setCurrentIndex(0)
+            self.ui.cb_Stepen.setCurrentIndex(0)
+            self.ui.cb_zvan.setCurrentIndex(0)
+            self.ui.tE_NaprPodgotov.setPlainText("")
+            self.ui.tE_Education.setPlainText("")
     #Функция редактирования записи
     def editRecord(self):
         self.ui.pb_Save.setEnabled(True)
@@ -388,6 +422,8 @@ class UPEditorWindow(QtWidgets.QMainWindow):
         
 
         self.tableRecords()
+        if len(self.records)>0:
+            self.ui.list_Disc.setCurrentRow(0)
         self.LoadKOAndAud()
 
     #Функции добавления преподавателей
@@ -497,6 +533,7 @@ class UPEditorWindow(QtWidgets.QMainWindow):
         if len(self.ui.list_ChosAud.findItems(item.text(),QtCore.Qt.MatchExactly))<1:
             self.ui.list_ChosAud.addItem(item.text())
 
+
     def removeAud(self,item):
         self.ui.list_ChosAud.takeItem(self.ui.list_ChosAud.currentRow())
 
@@ -580,6 +617,21 @@ class UPEditorWindow(QtWidgets.QMainWindow):
             for rec in self.records:
                 self.ui.list_Disc.addItem(rec.get("NameUD"))
         self.ui.list_Disc.setCurrentRow(0)
+        self.ui.le_NameUD.setText("")
+        self.ui.le_NumberUD.setText("")
+        for i in range(0,self.ui.list_ChosAud.count()):
+            self.ui.list_ChosAud.takeItem(i)
+        self.ui.cb_Teacher1.setCurrentIndex(0)
+        self.ui.cb_Teacher2.setCurrentIndex(0)
+        self.ui.cb_Teacher3.setCurrentIndex(0)
+        self.ui.cb_Teacher4.setCurrentIndex(0)
+        self.ui.cb_Teacher5.setCurrentIndex(0)
+        self.ui.cb_Teacher6.setCurrentIndex(0)
+        self.ui.TEACHER2.setVisible(False)
+        self.ui.TEACHER3.setVisible(False)
+        self.ui.TEACHER4.setVisible(False)
+        self.ui.TEACHER5.setVisible(False)
+        self.ui.TEACHER6.setVisible(False)
         
     #функция удаления
     def delRecord(self):
@@ -588,7 +640,10 @@ class UPEditorWindow(QtWidgets.QMainWindow):
             writeCSV("UPDB.csv",self.records)
             self.tableRecords()
         self.ui.list_Disc.setCurrentRow(0)
-
+        self.ui.le_NameUD.setText("")
+        self.ui.le_NumberUD.setText("")
+        for i in range(0,self.ui.list_ChosAud.count()):
+            self.ui.list_ChosAud.takeItem(i)
         
     #Функция редактирования
     def editRecord(self):
